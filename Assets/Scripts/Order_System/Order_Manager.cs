@@ -3,12 +3,8 @@ using UnityEngine;
 
 public class Order_Manager : MonoBehaviour
 {
-    [Header("Order Setup")]
-    [SerializeField] private Order orderPrefab;
-    [SerializeField] private Transform orderContainer;
-    [SerializeField] private int ordersToGenerate = 4;
-
     private readonly List<Order> availableOrders = new();
+
     private Order activeOrder;
 
     public IReadOnlyList<Order> AvailableOrders => availableOrders;
@@ -16,30 +12,29 @@ public class Order_Manager : MonoBehaviour
 
     public bool HasActiveOrder => activeOrder != null;
 
-    private void Start()
-    {
-        GenerateOrders();
-    }
-
     public void SetAvailableOrders(List<Order> orders)
     {
-        ClearAvailableOrders();
+        availableOrders.Clear();
 
         if (orders == null)
             return;
 
         foreach (Order order in orders)
         {
-            if (order == null)
-                continue;
-
-            availableOrders.Add(order);
+            if (order != null && order.IsAvailable)
+                availableOrders.Add(order);
         }
     }
 
     public void AddOrder(Order order)
     {
-        if (order == null || availableOrders.Contains(order))
+        if (order == null)
+            return;
+
+        if (!order.IsAvailable)
+            return;
+
+        if (availableOrders.Contains(order))
             return;
 
         availableOrders.Add(order);
@@ -50,7 +45,7 @@ public class Order_Manager : MonoBehaviour
         if (order == null)
             return false;
 
-        if (activeOrder != null)
+        if (HasActiveOrder)
             return false;
 
         if (!availableOrders.Contains(order))
@@ -90,6 +85,7 @@ public class Order_Manager : MonoBehaviour
             return false;
 
         activeOrder = null;
+
         return true;
     }
 
@@ -102,42 +98,8 @@ public class Order_Manager : MonoBehaviour
             return false;
 
         activeOrder = null;
+
         return true;
-    }
-
-    public void GenerateOrders()
-    {
-        ClearAvailableOrders();
-
-        if (orderPrefab == null)
-        {
-            Debug.LogError("Order Manager: Order Prefab is not assigned.", this);
-            return;
-        }
-
-        int count = Mathf.Max(1, ordersToGenerate);
-
-        for (int i = 0; i < count; i++)
-        {
-            Order order = InstantiateOrder();
-
-            if (order != null)
-                availableOrders.Add(order);
-        }
-    }
-
-    private Order InstantiateOrder()
-    {
-        Transform parent = orderContainer != null ? orderContainer : transform;
-
-        Order order = Instantiate(orderPrefab, parent);
-
-        if (order == null)
-            return null;
-
-        order.gameObject.name = $"Order_{availableOrders.Count + 1}";
-
-        return order;
     }
 
     public void ClearAvailableOrders()
@@ -153,11 +115,11 @@ public class Order_Manager : MonoBehaviour
         availableOrders.Clear();
     }
 
-    public void RefreshOrders()
+    public void RefreshOrders(List<Order> orders)
     {
-        if (activeOrder != null)
+        if (HasActiveOrder)
             return;
 
-        GenerateOrders();
+        SetAvailableOrders(orders);
     }
 }

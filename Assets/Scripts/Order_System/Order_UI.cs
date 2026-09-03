@@ -8,6 +8,7 @@ public class Order_UI : MonoBehaviour
     [SerializeField] private Order_UI_Controller uiController;
     [SerializeField] private Order_Card_UI orderCardPrefab;
     [SerializeField] private Transform orderCardContainer;
+    [SerializeField] private Order_Details_UI detailsUI;
 
     private readonly List<Order_Card_UI> orderCards = new();
 
@@ -38,6 +39,12 @@ public class Order_UI : MonoBehaviour
             return;
         }
 
+        if (detailsUI == null)
+        {
+            Debug.LogWarning("Order UI: Order Details UI is not assigned.", this);
+            return;
+        }
+
         IReadOnlyList<Order> orders = orderManager.AvailableOrders;
 
         for (int i = 0; i < orders.Count; i++)
@@ -59,7 +66,7 @@ public class Order_UI : MonoBehaviour
         if (card == null)
             return;
 
-        card.Setup(order);
+        card.Setup(order, detailsUI);
 
         orderCards.Add(card);
     }

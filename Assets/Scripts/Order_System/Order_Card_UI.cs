@@ -11,9 +11,7 @@ public class Order_Card_UI : MonoBehaviour
     [SerializeField] private TMP_Text rewardText;
     [SerializeField] private Button selectButton;
 
-    [Header("UI")]
-    [SerializeField] private Order_Details_UI detailsUI;
-
+    private Order_Details_UI detailsUI;
     private Order order;
 
     public Order Order => order;
@@ -30,9 +28,10 @@ public class Order_Card_UI : MonoBehaviour
             selectButton.onClick.RemoveListener(SelectOrder);
     }
 
-    public void Setup(Order targetOrder)
+    public void Setup(Order targetOrder, Order_Details_UI targetDetailsUI)
     {
         order = targetOrder;
+        detailsUI = targetDetailsUI;
 
         if (order == null)
         {
@@ -65,7 +64,11 @@ public class Order_Card_UI : MonoBehaviour
 
         if (detailsUI == null)
         {
-            Debug.LogWarning("Order Card UI: Order Details UI is not assigned.", this);
+            Debug.LogWarning(
+                "Order Card UI: Order Details UI is not assigned.",
+                this
+            );
+
             return;
         }
 

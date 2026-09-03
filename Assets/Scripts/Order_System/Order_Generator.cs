@@ -4,6 +4,7 @@ using UnityEngine;
 public class Order_Generator : MonoBehaviour
 {
     [Header("References")]
+    [SerializeField] private Order_Manager orderManager;
     [SerializeField] private Order orderPrefab;
     [SerializeField] private Transform orderContainer;
 
@@ -13,11 +14,31 @@ public class Order_Generator : MonoBehaviour
 
     public int OrderCount => orderCount;
 
+    private void Start()
+    {
+        GenerateAndSetOrders();
+    }
+
+    public void GenerateAndSetOrders()
+    {
+        if (!ValidateSetup())
+            return;
+
+        if (orderManager.HasActiveOrder)
+            return;
+
+        orderManager.ClearAvailableOrders();
+
+        List<Order> generatedOrders = GenerateOrders();
+
+        orderManager.SetAvailableOrders(generatedOrders);
+    }
+
     public List<Order> GenerateOrders()
     {
         List<Order> generatedOrders = new();
 
-        if (!ValidateSetup())
+        if (!ValidateGeneratorSetup())
             return generatedOrders;
 
         int count = Mathf.Min(orderCount, orderDataList.Count);
@@ -39,6 +60,9 @@ public class Order_Generator : MonoBehaviour
 
     private Order CreateOrder(Order_Data data)
     {
+        if (data == null)
+            return null;
+
         Transform parent = orderContainer != null
             ? orderContainer
             : transform;
@@ -55,6 +79,17 @@ public class Order_Generator : MonoBehaviour
     }
 
     private bool ValidateSetup()
+    {
+        if (orderManager == null)
+        {
+            Debug.LogError("Order Generator: Order Manager is not assigned.", this);
+            return false;
+        }
+
+        return ValidateGeneratorSetup();
+    }
+
+    private bool ValidateGeneratorSetup()
     {
         if (orderPrefab == null)
         {
