@@ -9,8 +9,13 @@ public class Order_Generator : MonoBehaviour
     [SerializeField] private Transform orderContainer;
 
     [Header("Order Pool")]
-    [SerializeField, Min(1)] private int orderCount = 4;
+    [SerializeField, Min(1)] private int orderCount = 3;
     [SerializeField] private List<Order_Data> orderDataList = new();
+
+    [Header("Card Positions")]
+    [SerializeField] private Vector2 firstCardPosition = new Vector2(-11.9187f, 294f);
+    [SerializeField] private Vector2 secondCardPosition = new Vector2(-11.9187f, 25f);
+    [SerializeField] private Vector2 thirdCardPosition = new Vector2(11.9187f, -244f);
 
     public int OrderCount => orderCount;
 
@@ -28,6 +33,7 @@ public class Order_Generator : MonoBehaviour
             return;
 
         orderManager.ClearAvailableOrders();
+        ClearGeneratedCards();
 
         List<Order> generatedOrders = GenerateOrders();
 
@@ -49,7 +55,7 @@ public class Order_Generator : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            Order order = CreateOrder(availableData[i]);
+            Order order = CreateOrder(availableData[i], i);
 
             if (order != null)
                 generatedOrders.Add(order);
@@ -58,7 +64,7 @@ public class Order_Generator : MonoBehaviour
         return generatedOrders;
     }
 
-    private Order CreateOrder(Order_Data data)
+    private Order CreateOrder(Order_Data data, int index)
     {
         if (data == null)
             return null;
@@ -67,7 +73,7 @@ public class Order_Generator : MonoBehaviour
             ? orderContainer
             : transform;
 
-        Order order = Instantiate(orderPrefab, parent);
+        Order order = Instantiate(orderPrefab, parent, false);
 
         if (order == null)
             return null;
@@ -75,14 +81,62 @@ public class Order_Generator : MonoBehaviour
         order.Initialize(data);
         order.name = $"Order_{data.OrderName}";
 
+        RectTransform rect = order.GetComponent<RectTransform>();
+
+        if (rect != null)
+        {
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+
+            rect.localScale = Vector3.one;
+            rect.localRotation = Quaternion.identity;
+
+            rect.anchoredPosition = GetCardPosition(index);
+        }
+
         return order;
+    }
+
+    private Vector2 GetCardPosition(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                return firstCardPosition;
+
+            case 1:
+                return secondCardPosition;
+
+            case 2:
+                return thirdCardPosition;
+
+            default:
+                return Vector2.zero;
+        }
+    }
+
+    private void ClearGeneratedCards()
+    {
+        Transform parent = orderContainer != null
+            ? orderContainer
+            : transform;
+
+        for (int i = parent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(parent.GetChild(i).gameObject);
+        }
     }
 
     private bool ValidateSetup()
     {
         if (orderManager == null)
         {
-            Debug.LogError("Order Generator: Order Manager is not assigned.", this);
+            Debug.LogError(
+                "Order Generator: Order Manager is not assigned.",
+                this
+            );
+
             return false;
         }
 
@@ -93,13 +147,21 @@ public class Order_Generator : MonoBehaviour
     {
         if (orderPrefab == null)
         {
-            Debug.LogError("Order Generator: Order Prefab is not assigned.", this);
+            Debug.LogError(
+                "Order Generator: Order Prefab is not assigned.",
+                this
+            );
+
             return false;
         }
 
         if (orderDataList == null || orderDataList.Count == 0)
         {
-            Debug.LogError("Order Generator: No Order Data assets assigned.", this);
+            Debug.LogError(
+                "Order Generator: No Order Data assets assigned.",
+                this
+            );
+
             return false;
         }
 

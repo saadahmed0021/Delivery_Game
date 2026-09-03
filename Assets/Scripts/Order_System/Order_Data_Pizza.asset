@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3a6bc643726ba4489c65a0f15948365, type: 3}
   m_Name: Order_Data_Pizza
   m_EditorClassIdentifier: Assembly-CSharp::Order_Data
-  orderName: Pizza
+  orderName: Pizza Deal
   restaurantName: Pizza Hut
   customerName: Shujja
   baseReward: 20
