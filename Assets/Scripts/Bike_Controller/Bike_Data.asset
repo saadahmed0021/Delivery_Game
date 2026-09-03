@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9540f5deedb626941b0ff3f0eac97ae1, type: 3}
+  m_Name: Bike_Data
+  m_EditorClassIdentifier: Assembly-CSharp::Bike_Data
+  maxSpeed: 20
+  acceleration: 20
+  engineBraking: 0
+  brakeForce: 0
+  reverseSpeed: 100
+  maxSteeringAngle: 20
+  steeringSpeed: 50
+  lowSpeedSteeringMultiplier: 1
+  highSpeedSteeringMultiplier: 0.35
+  steeringSpeedReference: 20
+  idleBalanceSpeed: 0.5
+  lowSpeedBalanceSpeed: 3
+  idleBalanceStrength: 25
+  lowSpeedBalanceStrength: 8
+  balanceDamping: 4
+  mass: 50
+  gravityMultiplier: 1
+  centerOfMassHeight: 0.45
+  centerOfMassOffset: {x: 0, y: -0.2, z: 0}
+  frontTireGrip: 0
+  rearTireGrip: 0
+  frontTireMaxLateralForce: 0
+  rearTireMaxLateralForce: 0
+  frontBrakeDistribution: 0.7
+  rearBrakeDistribution: 0.3
+  frontBrakeGrip: 0
+  rearBrakeGrip: 0
+  frontSuspensionDistance: 0.01
+  frontSuspensionStrength: 100
+  frontSuspensionDamping: 50
+  rearSuspensionDistance: 0.01
+  rearSuspensionStrength: 100
+  rearSuspensionDamping: 50
+  frontWheelRadius: 0.3
+  rearWheelRadius: 0.3
+  wheelVisualSpinMultiplier: 0.35
+  wheelbase: 1.4
+  rollingResistance: 0
+  aerodynamicDrag: 0
+  airControl: 2
+  airRotationSpeed: 3
+  groundCheckDistance: 0.1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
