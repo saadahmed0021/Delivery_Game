@@ -12,9 +12,9 @@ public class Order_Data : ScriptableObject
     [Min(0)]
     [SerializeField] private int baseReward = 100;
 
-    [Header("Locations")]
-    [SerializeField] private Order_Location restaurantLocation;
-    [SerializeField] private Order_Location customerLocation;
+    [Header("Location IDs")]
+    [SerializeField] private string restaurantLocationID;
+    [SerializeField] private string customerLocationID;
 
     public string OrderName => orderName;
     public string RestaurantName => restaurantName;
@@ -22,6 +22,6 @@ public class Order_Data : ScriptableObject
 
     public int BaseReward => baseReward;
 
-    public Order_Location RestaurantLocation => restaurantLocation;
-    public Order_Location CustomerLocation => customerLocation;
+    public string RestaurantLocationID => restaurantLocationID;
+    public string CustomerLocationID => customerLocationID;
 }

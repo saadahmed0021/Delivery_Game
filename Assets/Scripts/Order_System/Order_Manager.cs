@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class Order_Manager : MonoBehaviour
 {
+    [SerializeField] private Order_Currency_Reward currencyReward;
+    [SerializeField] private Order_Travel_Time travelTime;
+
     private readonly List<Order> availableOrders = new();
 
     private Order activeOrder;
@@ -57,6 +60,15 @@ public class Order_Manager : MonoBehaviour
         activeOrder = order;
         availableOrders.Remove(order);
 
+        if (currencyReward == null)
+            currencyReward = GetComponent<Order_Currency_Reward>();
+
+        if (travelTime == null)
+            travelTime = FindFirstObjectByType<Order_Travel_Time>();
+
+        currencyReward?.ResetReward();
+        travelTime?.StartPickupCountdown(activeOrder);
+
         return true;
     }
 
@@ -65,7 +77,15 @@ public class Order_Manager : MonoBehaviour
         if (activeOrder == null)
             return false;
 
-        return activeOrder.Pickup();
+        if (!activeOrder.Pickup())
+            return false;
+
+        if (travelTime == null)
+            travelTime = FindFirstObjectByType<Order_Travel_Time>();
+
+        travelTime?.StartDeliveryCountdown(activeOrder);
+
+        return true;
     }
 
     public bool DeliverOrder()
@@ -73,7 +93,15 @@ public class Order_Manager : MonoBehaviour
         if (activeOrder == null)
             return false;
 
-        return activeOrder.Deliver();
+        if (!activeOrder.Deliver())
+            return false;
+
+        if (travelTime == null)
+            travelTime = FindFirstObjectByType<Order_Travel_Time>();
+
+        travelTime?.StopCountdown();
+
+        return true;
     }
 
     public bool CompleteOrder()
@@ -81,8 +109,25 @@ public class Order_Manager : MonoBehaviour
         if (activeOrder == null)
             return false;
 
+        if (!activeOrder.IsDelivered)
+            return false;
+
+        if (currencyReward == null)
+            currencyReward = GetComponent<Order_Currency_Reward>();
+
+        if (currencyReward == null ||
+            !currencyReward.GiveReward(activeOrder.Reward))
+        {
+            return false;
+        }
+
         if (!activeOrder.Complete())
             return false;
+
+        if (travelTime == null)
+            travelTime = FindFirstObjectByType<Order_Travel_Time>();
+
+        travelTime?.StopCountdown();
 
         activeOrder = null;
 
@@ -96,6 +141,11 @@ public class Order_Manager : MonoBehaviour
 
         if (!activeOrder.Cancel())
             return false;
+
+        if (travelTime == null)
+            travelTime = FindFirstObjectByType<Order_Travel_Time>();
+
+        travelTime?.StopCountdown();
 
         activeOrder = null;
 

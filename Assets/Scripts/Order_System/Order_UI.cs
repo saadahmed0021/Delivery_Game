@@ -9,6 +9,12 @@ public class Order_UI : MonoBehaviour
     [SerializeField] private Order_Card_UI orderCardPrefab;
     [SerializeField] private Transform orderCardContainer;
     [SerializeField] private Order_Details_UI detailsUI;
+    [SerializeField] private Order_Travel_Time travelTime;
+
+    [Header("Card Positions")]
+    [SerializeField] private Vector2 firstCardPosition = new Vector2(-11.9187f, 294f);
+    [SerializeField] private Vector2 secondCardPosition = new Vector2(-11.9187f, 25f);
+    [SerializeField] private Vector2 thirdCardPosition = new Vector2(-11.9187f, -244f);
 
     private readonly List<Order_Card_UI> orderCards = new();
 
@@ -20,6 +26,11 @@ public class Order_UI : MonoBehaviour
     public void Refresh()
     {
         ClearCards();
+
+        if (travelTime == null)
+        {
+            travelTime = FindFirstObjectByType<Order_Travel_Time>();
+        }
 
         if (orderManager == null)
         {
@@ -49,11 +60,11 @@ public class Order_UI : MonoBehaviour
 
         for (int i = 0; i < orders.Count; i++)
         {
-            CreateCard(orders[i]);
+            CreateCard(orders[i], i);
         }
     }
 
-    private void CreateCard(Order order)
+    private void CreateCard(Order order, int index)
     {
         if (order == null)
             return;
@@ -66,7 +77,21 @@ public class Order_UI : MonoBehaviour
         if (card == null)
             return;
 
-        card.Setup(order, detailsUI);
+        RectTransform rect = card.GetComponent<RectTransform>();
+
+        if (rect != null)
+            rect.anchoredPosition = GetCardPosition(index);
+
+        string pickupTime = string.Empty;
+        Order_Location restaurant = order.RestaurantLocation;
+
+        if (travelTime != null && restaurant != null &&
+            travelTime.CalculatePickupTime(restaurant.Transform))
+        {
+            pickupTime = travelTime.PickupTimeDisplayFormatted;
+        }
+
+        card.Setup(order, detailsUI, pickupTime);
 
         orderCards.Add(card);
     }
@@ -80,6 +105,24 @@ public class Order_UI : MonoBehaviour
         }
 
         orderCards.Clear();
+    }
+
+    private Vector2 GetCardPosition(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                return firstCardPosition;
+
+            case 1:
+                return secondCardPosition;
+
+            case 2:
+                return thirdCardPosition;
+
+            default:
+                return Vector2.zero;
+        }
     }
 
     public void Close()

@@ -17,6 +17,9 @@ public class Order_Result_UI : MonoBehaviour
 
     private void Awake()
     {
+        if (orderManager == null)
+            orderManager = FindFirstObjectByType<Order_Manager>();
+
         if (closeButton != null)
             closeButton.onClick.AddListener(Close);
 
@@ -49,7 +52,28 @@ public class Order_Result_UI : MonoBehaviour
         if (resultPanel != null)
             resultPanel.SetActive(true);
 
-        orderManager?.CompleteOrder();
+        if (orderManager == null || !orderManager.CompleteOrder())
+        {
+            Hide();
+        }
+    }
+
+    public void ShowFailure(Order order)
+    {
+        if (order == null)
+            return;
+
+        if (orderNameText != null)
+            orderNameText.text = order.OrderName;
+
+        if (resultText != null)
+            resultText.text = "Order Failed!";
+
+        if (rewardText != null)
+            rewardText.text = "No reward";
+
+        if (resultPanel != null)
+            resultPanel.SetActive(true);
     }
 
     public void Hide()

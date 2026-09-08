@@ -9,6 +9,7 @@ public class Order_Card_UI : MonoBehaviour
     [SerializeField] private TMP_Text restaurantNameText;
     [SerializeField] private TMP_Text customerNameText;
     [SerializeField] private TMP_Text rewardText;
+    [SerializeField] private TMP_Text travelTimeText;
     [SerializeField] private Button selectButton;
 
     private Order_Details_UI detailsUI;
@@ -30,6 +31,14 @@ public class Order_Card_UI : MonoBehaviour
 
     public void Setup(Order targetOrder, Order_Details_UI targetDetailsUI)
     {
+        Setup(targetOrder, targetDetailsUI, string.Empty);
+    }
+
+    public void Setup(
+        Order targetOrder,
+        Order_Details_UI targetDetailsUI,
+        string pickupTimeFormatted)
+    {
         order = targetOrder;
         detailsUI = targetDetailsUI;
 
@@ -39,10 +48,10 @@ public class Order_Card_UI : MonoBehaviour
             return;
         }
 
-        UpdateUI();
+        UpdateUI(pickupTimeFormatted);
     }
 
-    private void UpdateUI()
+    private void UpdateUI(string pickupTimeFormatted)
     {
         if (orderNameText != null)
             orderNameText.text = order.OrderName;
@@ -55,6 +64,9 @@ public class Order_Card_UI : MonoBehaviour
 
         if (rewardText != null)
             rewardText.text = $"${order.Reward}";
+
+        if (travelTimeText != null)
+            travelTimeText.text = pickupTimeFormatted;
     }
 
     private void SelectOrder()
@@ -88,6 +100,9 @@ public class Order_Card_UI : MonoBehaviour
 
         if (rewardText != null)
             rewardText.text = string.Empty;
+
+        if (travelTimeText != null)
+            travelTimeText.text = string.Empty;
 
         if (selectButton != null)
             selectButton.interactable = false;

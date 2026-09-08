@@ -16,5 +16,5 @@ MonoBehaviour:
   restaurantName: Ranchers
   customerName: Birdie
   baseReward: 10
-  restaurantLocation: {fileID: 0}
-  customerLocation: {fileID: 0}
+  restaurantLocationID: 2
+  customerLocationID: 5

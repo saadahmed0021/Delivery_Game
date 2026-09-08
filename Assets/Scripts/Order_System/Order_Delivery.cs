@@ -5,6 +5,7 @@ public class Order_Delivery : MonoBehaviour
     [Header("References")]
     [SerializeField] private Order_Manager orderManager;
     [SerializeField] private Transform player;
+    [SerializeField] private Order_Result_UI resultUI;
 
     [Header("Delivery Point")]
     [SerializeField] private Transform deliveryPoint;
@@ -27,6 +28,11 @@ public class Order_Delivery : MonoBehaviour
     {
         if (deliveryPoint == null)
             deliveryPoint = transform;
+
+        if (resultUI == null)
+            resultUI = FindFirstObjectByType<Order_Result_UI>(
+                FindObjectsInactive.Include
+            );
     }
 
     public bool TryDeliver()
@@ -37,7 +43,15 @@ public class Order_Delivery : MonoBehaviour
         if (!IsPlayerInRange())
             return false;
 
-        return orderManager.DeliverOrder();
+        if (!orderManager.DeliverOrder())
+            return false;
+
+        if (resultUI != null)
+            resultUI.Show(orderManager.ActiveOrder);
+        else
+            orderManager.CompleteOrder();
+
+        return true;
     }
 
     private bool HasValidOrder()

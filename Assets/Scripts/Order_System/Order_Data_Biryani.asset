@@ -16,5 +16,5 @@ MonoBehaviour:
   restaurantName: Student Biryani
   customerName: Ali
   baseReward: 5
-  restaurantLocation: {fileID: 0}
-  customerLocation: {fileID: 0}
+  restaurantLocationID: 1
+  customerLocationID: 5

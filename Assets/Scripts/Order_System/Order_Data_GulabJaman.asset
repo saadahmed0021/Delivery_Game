@@ -16,5 +16,5 @@ MonoBehaviour:
   restaurantName: Nisar Sweets
   customerName: Abdullah
   baseReward: 10
-  restaurantLocation: {fileID: 0}
-  customerLocation: {fileID: 0}
+  restaurantLocationID: 3
+  customerLocationID: 5

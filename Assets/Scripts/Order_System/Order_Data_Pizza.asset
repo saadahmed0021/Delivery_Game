@@ -16,5 +16,5 @@ MonoBehaviour:
   restaurantName: Pizza Hut
   customerName: Shujja
   baseReward: 20
-  restaurantLocation: {fileID: 0}
-  customerLocation: {fileID: 0}
+  restaurantLocationID: 5
+  customerLocationID: 5

@@ -16,5 +16,5 @@ MonoBehaviour:
   restaurantName: Soft Swirl
   customerName: Ahmed
   baseReward: 10
-  restaurantLocation: {fileID: 0}
-  customerLocation: {fileID: 0}
+  restaurantLocationID: 4
+  customerLocationID: 5
