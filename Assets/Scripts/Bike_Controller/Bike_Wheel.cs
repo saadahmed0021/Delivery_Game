@@ -52,22 +52,12 @@ public class Bike_Wheel : MonoBehaviour
 
         if (bikeRigidbody == null)
         {
-            Debug.LogError(
-                "Bike_Wheel requires a Rigidbody in the parent hierarchy.",
-                this
-            );
-
             enabled = false;
             return;
         }
 
         if (data == null)
         {
-            Debug.LogError(
-                "Bike_Data is not assigned.",
-                this
-            );
-
             enabled = false;
             return;
         }
@@ -80,11 +70,6 @@ public class Bike_Wheel : MonoBehaviour
 
         if (input == null)
         {
-            Debug.LogError(
-                "Bike_Input could not be found.",
-                this
-            );
-
             enabled = false;
             return;
         }
@@ -99,11 +84,6 @@ public class Bike_Wheel : MonoBehaviour
 
             if (steering == null)
             {
-                Debug.LogError(
-                    "Bike_Steering could not be found for the front wheel.",
-                    this
-                );
-
                 enabled = false;
                 return;
             }
@@ -138,14 +118,6 @@ public class Bike_Wheel : MonoBehaviour
         ApplyLateralGrip();
         ApplyEnginePower();
         ApplyBrakes();
-
-        Debug.Log(
-    gameObject.name +
-    " Grounded: " +
-    IsGrounded +
-    " | Throttle: " +
-    input.Throttle
-);
     }
 
     private void Update()
@@ -159,34 +131,38 @@ public class Bike_Wheel : MonoBehaviour
 
     private void CheckGround()
     {
-        Vector3 origin =
-            transform.position;
+        Vector3 origin = transform.position;
+        Vector3 direction = Vector3.down;
 
-        float rayLength =
-            GetSuspensionDistance() +
-            GetWheelRadius();
+        float suspensionDistance = GetSuspensionDistance();
+        float wheelRadius = GetWheelRadius();
+        float rayLength = suspensionDistance + wheelRadius + 0.125f;
 
         IsGrounded = Physics.Raycast(
             origin,
-            -transform.up,
+            direction,
             out RaycastHit hit,
             rayLength,
             data.groundLayer,
             QueryTriggerInteraction.Ignore
         );
 
+        Debug.DrawRay(
+            origin,
+            direction * rayLength,
+            IsGrounded ? Color.green : Color.red
+        );
+
         if (!IsGrounded)
         {
             GroundPoint = Vector3.zero;
             GroundNormal = Vector3.up;
+
             return;
         }
 
-        GroundPoint =
-            hit.point;
-
-        GroundNormal =
-            hit.normal;
+        GroundPoint = hit.point;
+        GroundNormal = hit.normal;
     }
 
     // =========================================================
@@ -300,8 +276,6 @@ public class Bike_Wheel : MonoBehaviour
                 input.Throttle
             );
 
-        // Smooth throttle response so the bike builds speed over time
-        // instead of hitting top speed almost instantly.
         float throttleCurve =
             Mathf.Lerp(
                 0.2f,
@@ -309,7 +283,6 @@ public class Bike_Wheel : MonoBehaviour
                 throttle
             );
 
-        // Ease off the acceleration as the bike approaches max speed.
         float speedFactor =
             1f -
             speedRatio *
@@ -448,17 +421,6 @@ public class Bike_Wheel : MonoBehaviour
         {
             return;
         }
-
-        /*
-         * Wheel rotation is based directly on the velocity
-         * of the wheel point.
-         *
-         * distance = speed × time
-         *
-         * circumference = 2πr
-         *
-         * rotations = distance / circumference
-         */
 
         float rotationDegrees =
             (ForwardSpeed / radius) *

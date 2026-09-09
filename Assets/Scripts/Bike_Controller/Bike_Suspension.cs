@@ -40,33 +40,21 @@ public class Bike_Suspension : MonoBehaviour
 
         if (bikeRigidbody == null)
         {
-            Debug.LogError(
-                "Bike_Suspension requires a Rigidbody in the parent hierarchy.",
-                this
-            );
-
             enabled = false;
             return;
         }
 
         if (data == null)
         {
-            Debug.LogError(
-                "Bike_Data is not assigned in Bike_Suspension.",
-                this
-            );
-
             enabled = false;
             return;
         }
 
-        // Use the appropriate wheel radius from Bike_Data.
         wheelRadius =
             isFrontWheel
                 ? data.frontWheelRadius
                 : data.rearWheelRadius;
 
-        // Use the same ground layer as the rest of the bike.
         groundLayer =
             data.groundLayer;
     }
@@ -83,15 +71,23 @@ public class Bike_Suspension : MonoBehaviour
 
     private void DetectGround()
     {
-        Vector3 origin =
-            transform.position;
+        Vector3 origin = transform.position;
 
         Vector3 suspensionDirection =
-            -transform.up;
+            Vector3.down;
+
+        float suspensionDistance =
+            GetSuspensionDistance();
 
         float rayLength =
-            GetSuspensionDistance() +
-            wheelRadius;
+            suspensionDistance +
+            wheelRadius + 0.125f;
+
+        Debug.DrawRay(
+            origin,
+            suspensionDirection * rayLength,
+            Color.red
+        );
 
         IsGrounded = Physics.Raycast(
             origin,
@@ -167,13 +163,11 @@ public class Bike_Suspension : MonoBehaviour
         Vector3 suspensionDirection =
             transform.up;
 
-        // Velocity of the suspension point.
         Vector3 pointVelocity =
             bikeRigidbody.GetPointVelocity(
                 transform.position
             );
 
-        // Velocity along the suspension axis.
         float suspensionVelocity =
             Vector3.Dot(
                 pointVelocity,
@@ -186,22 +180,18 @@ public class Bike_Suspension : MonoBehaviour
         float suspensionDamping =
             GetSuspensionDamping();
 
-        // Spring force.
         float springForce =
             Compression *
             suspensionStrength;
 
-        // Damping force.
         float dampingForce =
             suspensionVelocity *
             suspensionDamping;
 
-        // Total force.
         float totalForce =
             springForce -
             dampingForce;
 
-        // Suspension cannot pull the bike toward the ground.
         if (totalForce <= 0f)
         {
             return;

@@ -71,41 +71,35 @@ public class Bike_Movement : MonoBehaviour
     private void FixedUpdate()
     {
         ApplyThrottle();
-        ApplyEngineBraking();
         ApplyBraking();
+
         ApplyRollingResistance();
         ApplyAerodynamicDrag();
 
         ApplySteering();
 
         LimitForwardSpeed();
+
         UpdateSpeedDisplay();
     }
 
-    private void UpdateSpeedDisplay()
-    {
-        currentSpeed = GetForwardSpeed();
-    }
-
-    // =========================================================
-    // THROTTLE
-    // =========================================================
-
     private void ApplyThrottle()
     {
-        if (input.Throttle <= 0f)
+        if (input.Throttle <= 0.001f)
         {
             return;
         }
 
         float forwardSpeed = GetForwardSpeed();
 
-        if (forwardSpeed >= data.maxSpeed)
+        // Do not accelerate backwards.
+        if (forwardSpeed < -0.1f)
         {
             return;
         }
 
-        if (forwardSpeed < -0.1f)
+        // Maximum forward speed reached.
+        if (forwardSpeed >= data.maxSpeed)
         {
             return;
         }
@@ -127,43 +121,9 @@ public class Bike_Movement : MonoBehaviour
         );
     }
 
-    // =========================================================
-    // ENGINE BRAKING
-    // =========================================================
-
-    private void ApplyEngineBraking()
-    {
-        if (input.Throttle > 0.01f)
-        {
-            return;
-        }
-
-        if (input.Brake > 0.01f)
-        {
-            return;
-        }
-
-        float forwardSpeed = GetForwardSpeed();
-
-        if (forwardSpeed <= 0.01f)
-        {
-            return;
-        }
-
-        bikeRigidbody.AddForce(
-            -transform.forward *
-            data.engineBraking,
-            ForceMode.Acceleration
-        );
-    }
-
-    // =========================================================
-    // BRAKING
-    // =========================================================
-
     private void ApplyBraking()
     {
-        if (input.Brake <= 0.01f)
+        if (input.Brake <= 0.001f)
         {
             return;
         }
@@ -178,30 +138,9 @@ public class Bike_Movement : MonoBehaviour
         float brakeDirection =
             Mathf.Sign(forwardSpeed);
 
-        float currentSpeed =
-            Mathf.Abs(forwardSpeed);
-
-        // Stronger braking at higher speed, but quickly taper off near zero
-        // so the bike decelerates smoothly instead of stopping instantly.
         float brakeForce =
             data.brakeForce *
             input.Brake;
-
-        float maxBrakeForce =
-            Mathf.Lerp(
-                2f,
-                12f,
-                Mathf.Clamp01(
-                    currentSpeed /
-                    Mathf.Max(1f, data.maxSpeed)
-                )
-            );
-
-        brakeForce =
-            Mathf.Min(
-                brakeForce,
-                maxBrakeForce
-            );
 
         bikeRigidbody.AddForce(
             -transform.forward *
@@ -209,122 +148,14 @@ public class Bike_Movement : MonoBehaviour
             brakeForce,
             ForceMode.Acceleration
         );
+
+        Debug.Log(
+    "MOVEMENT BRAKE | Speed: " +
+    GetForwardSpeed() +
+    " | Brake: " +
+    input.Brake
+);
     }
-
-    // =========================================================
-    // STEERING
-    // =========================================================
-
-    private void ApplySteering()
-    {
-        float steeringAngle =
-            steering.CurrentSteeringAngle;
-
-        if (Mathf.Abs(steeringAngle) <= 0.01f)
-        {
-            return;
-        }
-
-        Vector3 velocity =
-            bikeRigidbody.linearVelocity;
-
-        Vector3 horizontalVelocity =
-            new Vector3(
-                velocity.x,
-                0f,
-                velocity.z
-            );
-
-        float speed =
-            horizontalVelocity.magnitude;
-
-        // Don't rotate the bike while it is essentially stopped.
-        if (speed <= 0.1f)
-        {
-            return;
-        }
-
-        float forwardSpeed =
-            GetForwardSpeed();
-
-        if (Mathf.Abs(forwardSpeed) <= 0.01f)
-        {
-            return;
-        }
-
-        /*
-         * Steering angle controls how quickly the bike
-         * changes its heading.
-         *
-         * This is deliberately speed-dependent:
-         * - very slow = sharper turning
-         * - faster = smoother turning
-         */
-
-        float speedFactor =
-            Mathf.Clamp01(
-                speed / data.steeringSpeedReference
-            );
-
-        float turnRate =
-            Mathf.Lerp(
-                data.steeringSpeed * 0.35f,
-                data.steeringSpeed,
-                speedFactor
-            );
-
-        float turnAmount =
-            steeringAngle /
-            data.maxSteeringAngle;
-
-        turnAmount =
-            Mathf.Clamp(
-                turnAmount,
-                -1f,
-                1f
-            );
-
-        float rotationAmount =
-            turnAmount *
-            turnRate *
-            Mathf.Sign(forwardSpeed) *
-            Time.fixedDeltaTime;
-
-        // Rotate the bike's heading.
-        Quaternion rotation =
-            Quaternion.Euler(
-                0f,
-                rotationAmount,
-                0f
-            );
-
-        Vector3 newVelocity =
-            rotation *
-            horizontalVelocity;
-
-        // Rotate the Rigidbody's velocity to follow
-        // the direction of the steering.
-        bikeRigidbody.linearVelocity =
-            new Vector3(
-                newVelocity.x,
-                velocity.y,
-                newVelocity.z
-            );
-
-        // Reverse steering turns the bike's heading in the
-        // opposite direction while it moves backward.
-        Quaternion targetRotation =
-            bikeRigidbody.rotation *
-            rotation;
-
-        bikeRigidbody.MoveRotation(
-            targetRotation
-        );
-    }
-
-    // =========================================================
-    // ROLLING RESISTANCE
-    // =========================================================
 
     private void ApplyRollingResistance()
     {
@@ -359,10 +190,6 @@ public class Bike_Movement : MonoBehaviour
         );
     }
 
-    // =========================================================
-    // AERODYNAMIC DRAG
-    // =========================================================
-
     private void ApplyAerodynamicDrag()
     {
         Vector3 velocity =
@@ -394,9 +221,98 @@ public class Bike_Movement : MonoBehaviour
         );
     }
 
-    // =========================================================
-    // SPEED LIMIT
-    // =========================================================
+    private void ApplySteering()
+    {
+        float steeringAngle =
+            steering.CurrentSteeringAngle;
+
+        if (Mathf.Abs(steeringAngle) <= 0.01f)
+        {
+            return;
+        }
+
+        Vector3 velocity =
+            bikeRigidbody.linearVelocity;
+
+        Vector3 horizontalVelocity =
+            new Vector3(
+                velocity.x,
+                0f,
+                velocity.z
+            );
+
+        float speed =
+            horizontalVelocity.magnitude;
+
+        if (speed <= 0.1f)
+        {
+            return;
+        }
+
+        float forwardSpeed =
+            GetForwardSpeed();
+
+        if (Mathf.Abs(forwardSpeed) <= 0.01f)
+        {
+            return;
+        }
+
+        float speedFactor =
+            Mathf.Clamp01(
+                speed /
+                data.steeringSpeedReference
+            );
+
+        float turnRate =
+            Mathf.Lerp(
+                data.steeringSpeed * 0.35f,
+                data.steeringSpeed,
+                speedFactor
+            );
+
+        float turnAmount =
+            steeringAngle /
+            Mathf.Max(
+                data.maxSteeringAngle,
+                0.001f
+            );
+
+        turnAmount =
+            Mathf.Clamp(
+                turnAmount,
+                -1f,
+                1f
+            );
+
+        float rotationAmount =
+            turnAmount *
+            turnRate *
+            Mathf.Sign(forwardSpeed) *
+            Time.fixedDeltaTime;
+
+        Quaternion rotation =
+            Quaternion.Euler(
+                0f,
+                rotationAmount,
+                0f
+            );
+
+        Vector3 newVelocity =
+            rotation *
+            horizontalVelocity;
+
+        bikeRigidbody.linearVelocity =
+            new Vector3(
+                newVelocity.x,
+                velocity.y,
+                newVelocity.z
+            );
+
+        bikeRigidbody.MoveRotation(
+            bikeRigidbody.rotation *
+            rotation
+        );
+    }
 
     private void LimitForwardSpeed()
     {
@@ -423,30 +339,29 @@ public class Bike_Movement : MonoBehaviour
             return;
         }
 
-        Vector3 limitedDirection =
-            horizontalVelocity.normalized;
+        Vector3 limitedVelocity =
+            horizontalVelocity.normalized *
+            data.maxSpeed;
 
         bikeRigidbody.linearVelocity =
             new Vector3(
-                limitedDirection.x * data.maxSpeed,
+                limitedVelocity.x,
                 velocity.y,
-                limitedDirection.z * data.maxSpeed
+                limitedVelocity.z
             );
     }
 
-    // =========================================================
-    // SPEED
-    // =========================================================
-
     private float GetForwardSpeed()
     {
-        Vector3 velocity =
-            bikeRigidbody.linearVelocity;
-
         return Vector3.Dot(
-            velocity,
+            bikeRigidbody.linearVelocity,
             transform.forward
         );
     }
 
+    private void UpdateSpeedDisplay()
+    {
+        currentSpeed =
+            GetForwardSpeed();
+    }
 }

@@ -61,12 +61,9 @@ public class Bike_Physics : MonoBehaviour
     {
         CheckGrounded();
 
-        if (!IsGrounded)
-        {
-            ApplyGravity();
-        }
+        ApplyGravity();
 
-    ApplyLowSpeedBalance();
+        //ApplyLowSpeedBalance();
     }
 
     // =========================================================
@@ -288,40 +285,16 @@ public class Bike_Physics : MonoBehaviour
     // =========================================================
 
     private void OnDrawGizmosSelected()
-    {
-        if (data == null)
-        {
-            return;
-        }
+{
+    float rayLength = 5f;
 
-        Vector3 origin;
+    Gizmos.color = Color.cyan;
 
-        if (groundCheckPoint != null)
-        {
-            origin = groundCheckPoint.position;
-        }
-        else
-        {
-            origin = transform.position;
-        }
+    Gizmos.DrawRay(
+        transform.position,
+        -transform.up * rayLength
+    );
 
-        Gizmos.color =
-            IsGrounded
-                ? Color.green
-                : Color.red;
-
-        Gizmos.DrawLine(
-            origin,
-            origin +
-            Vector3.down *
-            data.groundCheckDistance
-        );
-
-        Gizmos.DrawSphere(
-            origin +
-            Vector3.down *
-            data.groundCheckDistance,
-            0.05f
-        );
-    }
+    Gizmos.DrawSphere(transform.position, 0.1f);
+}
 }

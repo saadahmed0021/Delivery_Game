@@ -288,7 +288,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 0, z: 2.331084}
-  m_Center: {x: 0, y: 0, z: -0.032031417}
+  m_Center: {x: 0, y: -0.0689, z: -0.032031417}
 --- !u!1 &178743912
 GameObject:
   m_ObjectHideFlags: 0
@@ -1082,7 +1082,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 1268976159}
+  m_Material: {fileID: 649572865}
   m_Color: {r: 0.105882354, g: 0.13333334, b: 0.16470589, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -1442,6 +1442,47 @@ MonoBehaviour:
   resultUI: {fileID: 178743914}
   deliveryPoint: {fileID: 610034847}
   deliveryRadius: 2
+--- !u!21 &649572865
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: UI/RoundedCorners/RoundedCorners
+  m_Shader: {fileID: 4800000, guid: 0bd2ec5d73751e34a814274a454bec41, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _UseUIAlphaClip: 0
+    m_Colors:
+    - _OuterUV: {r: 0, g: 0, b: 1, a: 1}
+    - _WidthHeightRadius: {r: 1570.6199, g: 1080, b: 68.8, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &673015472
 GameObject:
   m_ObjectHideFlags: 0
@@ -1841,7 +1882,7 @@ Transform:
   m_GameObject: {fileID: 862888595}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.1963, z: -0.177}
+  m_LocalPosition: {x: 0, y: 0.031, z: -0.177}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2105,6 +2146,47 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 929202394}
   m_CullTransparentMesh: 1
+--- !u!21 &949946654
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: UI/RoundedCorners/RoundedCorners
+  m_Shader: {fileID: 4800000, guid: 0bd2ec5d73751e34a814274a454bec41, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _UseUIAlphaClip: 0
+    m_Colors:
+    - _OuterUV: {r: 0, g: 0, b: 1, a: 1}
+    - _WidthHeightRadius: {r: 1789.3677, g: 1229.294, b: 80, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &1048155674
 GameObject:
   m_ObjectHideFlags: 0
@@ -3026,47 +3108,6 @@ RectTransform:
   m_AnchoredPosition: {x: 326, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!21 &1268976159
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: UI/RoundedCorners/RoundedCorners
-  m_Shader: {fileID: 4800000, guid: 0bd2ec5d73751e34a814274a454bec41, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 0
-    - _StencilComp: 8
-    - _StencilOp: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _UseUIAlphaClip: 0
-    m_Colors:
-    - _OuterUV: {r: 0, g: 0, b: 1, a: 1}
-    - _WidthHeightRadius: {r: 1570.6199, g: 1080, b: 68.8, a: 0}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!1 &1269170015
 GameObject:
   m_ObjectHideFlags: 0
@@ -4618,47 +4659,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1975116353}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!21 &1980024558
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: UI/RoundedCorners/RoundedCorners
-  m_Shader: {fileID: 4800000, guid: 0bd2ec5d73751e34a814274a454bec41, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 0
-    - _StencilComp: 8
-    - _StencilOp: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _UseUIAlphaClip: 0
-    m_Colors:
-    - _OuterUV: {r: 0, g: 0, b: 1, a: 1}
-    - _WidthHeightRadius: {r: 1789.3677, g: 1229.294, b: 80, a: 0}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!1 &2028343660
 GameObject:
   m_ObjectHideFlags: 0
@@ -4833,7 +4833,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 1980024558}
+  m_Material: {fileID: 949946654}
   m_Color: {r: 0.105882354, g: 0.13333334, b: 0.16470589, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -36390,8 +36390,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bike_Steering
   input: {fileID: 3004078907330391059}
   data: {fileID: 11400000, guid: 9e8ff6fbb24ab8743bd91b52c1a3d43d, type: 2}
-  bikeRigidbody: {fileID: 0}
-  currentSteeringAngle: 0
 --- !u!114 &3004078907330391055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36408,12 +36406,6 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: 9e8ff6fbb24ab8743bd91b52c1a3d43d, type: 2}
   frontSteeringPivot: {fileID: 1872422038}
   visualSteeringSmoothness: 15
-  wheels: []
-  initialSteeringPivotRotation: {x: 0, y: 0, z: 0, w: 0}
-  initialWheelRotations: []
-  initialWheelPositions: []
-  visualSteeringAngle: 0
-  wheelRotations: []
 --- !u!114 &3004078907330391056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36428,6 +36420,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bike_Reverse
   input: {fileID: 3004078907330391059}
   data: {fileID: 11400000, guid: 9e8ff6fbb24ab8743bd91b52c1a3d43d, type: 2}
+  reverseAcceleration: 13
+  reverseStartSpeed: 0.1
 --- !u!114 &3004078907330391057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36442,9 +36436,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bike_Physics
   data: {fileID: 11400000, guid: 9e8ff6fbb24ab8743bd91b52c1a3d43d, type: 2}
   groundCheckPoint: {fileID: 862888596}
-  bikeRigidbody: {fileID: 0}
-  currentBalanceStrength: 0
-  <IsGrounded>k__BackingField: 0
 --- !u!114 &3004078907330391058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36459,8 +36450,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bike_Movement
   input: {fileID: 3004078907330391059}
   data: {fileID: 11400000, guid: 9e8ff6fbb24ab8743bd91b52c1a3d43d, type: 2}
+  steering: {fileID: 3004078907330391054}
   currentSpeed: 0
-  bikeRigidbody: {fileID: 0}
 --- !u!114 &3004078907330391059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36473,11 +36464,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8be11bf3b9843b040b17b958ba05034d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bike_Input
-  <Throttle>k__BackingField: 0
-  <Brake>k__BackingField: 0
-  <Steering>k__BackingField: 0
-  <Handbrake>k__BackingField: 0
-  <Reset>k__BackingField: 0
 --- !u!114 &3004078907330391060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74105,12 +74091,8 @@ MonoBehaviour:
   isFrontWheel: 1
   wheelRadius: 0.3
   groundLayer:
+    serializedVersion: 2
     m_Bits: 64
-  <IsGrounded>k__BackingField: 0
-  <GroundPoint>k__BackingField: {x: 0, y: 0, z: 0}
-  <GroundNormal>k__BackingField: {x: 0, y: 0, z: 0}
-  <Compression>k__BackingField: 0
-  <SuspensionLength>k__BackingField: 0
 --- !u!114 &6694160579897943466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74131,13 +74113,8 @@ MonoBehaviour:
   wheelDirection: {fileID: 3004078907330391052}
   wheelVisual: {fileID: 3798678759354968484}
   visualRotationAxis: {x: 1, y: 0, z: 0}
-  canBrake: 1
+  canBrake: 0
   receivesEnginePower: 0
-  <IsGrounded>k__BackingField: 0
-  <GroundPoint>k__BackingField: {x: 0, y: 0, z: 0}
-  <GroundNormal>k__BackingField: {x: 0, y: 0, z: 0}
-  <ForwardSpeed>k__BackingField: 0
-  <SidewaysSpeed>k__BackingField: 0
 --- !u!4 &6694622598475302362
 Transform:
   m_ObjectHideFlags: 0
@@ -91295,12 +91272,8 @@ MonoBehaviour:
   isFrontWheel: 0
   wheelRadius: 0.3
   groundLayer:
+    serializedVersion: 2
     m_Bits: 64
-  <IsGrounded>k__BackingField: 0
-  <GroundPoint>k__BackingField: {x: 0, y: 0, z: 0}
-  <GroundNormal>k__BackingField: {x: 0, y: 0, z: 0}
-  <Compression>k__BackingField: 0
-  <SuspensionLength>k__BackingField: 0
 --- !u!114 &8388709647460694244
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91321,13 +91294,8 @@ MonoBehaviour:
   wheelDirection: {fileID: 3004078907330391052}
   wheelVisual: {fileID: 4944283400087310612}
   visualRotationAxis: {x: 1, y: 0, z: 0}
-  canBrake: 1
-  receivesEnginePower: 1
-  <IsGrounded>k__BackingField: 0
-  <GroundPoint>k__BackingField: {x: 0, y: 0, z: 0}
-  <GroundNormal>k__BackingField: {x: 0, y: 0, z: 0}
-  <ForwardSpeed>k__BackingField: 0
-  <SidewaysSpeed>k__BackingField: 0
+  canBrake: 0
+  receivesEnginePower: 0
 --- !u!33 &8394746374890173600
 MeshFilter:
   m_ObjectHideFlags: 0
