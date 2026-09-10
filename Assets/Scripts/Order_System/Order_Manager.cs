@@ -5,15 +5,37 @@ public class Order_Manager : MonoBehaviour
 {
     [SerializeField] private Order_Currency_Reward currencyReward;
     [SerializeField] private Order_Travel_Time travelTime;
+    [SerializeField] private Order_Generator orderGenerator;
 
     private readonly List<Order> availableOrders = new();
 
     private Order activeOrder;
+    private int activeOrderSlotIndex = -1;
 
     public IReadOnlyList<Order> AvailableOrders => availableOrders;
     public Order ActiveOrder => activeOrder;
 
     public bool HasActiveOrder => activeOrder != null;
+
+    public void InsertAvailableOrder(Order order, int index)
+    {
+        if (order == null)
+            return;
+
+        if (!order.IsAvailable)
+            return;
+
+        if (availableOrders.Contains(order))
+            return;
+
+        if (index < 0)
+            index = 0;
+
+        if (index > availableOrders.Count)
+            index = availableOrders.Count;
+
+        availableOrders.Insert(index, order);
+    }
 
     public void SetAvailableOrders(List<Order> orders)
     {
@@ -51,14 +73,17 @@ public class Order_Manager : MonoBehaviour
         if (HasActiveOrder)
             return false;
 
-        if (!availableOrders.Contains(order))
+        int orderIndex = availableOrders.IndexOf(order);
+
+        if (orderIndex < 0)
             return false;
 
         if (!order.Accept())
             return false;
 
         activeOrder = order;
-        availableOrders.Remove(order);
+        activeOrderSlotIndex = orderIndex;
+        availableOrders.RemoveAt(orderIndex);
 
         if (currencyReward == null)
             currencyReward = GetComponent<Order_Currency_Reward>();
@@ -129,7 +154,19 @@ public class Order_Manager : MonoBehaviour
 
         travelTime?.StopCountdown();
 
+        int replacedOrderIndex = activeOrderSlotIndex;
         activeOrder = null;
+        activeOrderSlotIndex = -1;
+
+        if (replacedOrderIndex >= 0)
+        {
+            Order_Generator generator = orderGenerator != null
+                ? orderGenerator
+                : FindFirstObjectByType<Order_Generator>();
+
+            if (generator != null)
+                generator.GenerateReplacementOrder(replacedOrderIndex);
+        }
 
         return true;
     }

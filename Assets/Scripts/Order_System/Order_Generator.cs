@@ -64,6 +64,36 @@ public class Order_Generator : MonoBehaviour
         return generatedOrders;
     }
 
+    public Order GenerateReplacementOrder(int slotIndex)
+    {
+        if (!ValidateGeneratorSetup())
+            return null;
+
+        if (orderManager == null)
+        {
+            Debug.LogError(
+                "Order Generator: Order Manager is not assigned.",
+                this
+            );
+
+            return null;
+        }
+
+        if (orderDataList == null || orderDataList.Count == 0)
+            return null;
+
+        int randomIndex = Random.Range(0, orderDataList.Count);
+        Order_Data randomData = orderDataList[randomIndex];
+        Order replacementOrder = CreateOrder(randomData, slotIndex);
+
+        if (replacementOrder == null)
+            return null;
+
+        orderManager.InsertAvailableOrder(replacementOrder, slotIndex);
+
+        return replacementOrder;
+    }
+
     private Order CreateOrder(Order_Data data, int index)
     {
         if (data == null)
