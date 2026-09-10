@@ -4,6 +4,7 @@ public class Order_UI_Controller : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private GameObject orderPanel;
+    [SerializeField] private Order_Manager orderManager;
 
     [Header("Input")]
     [SerializeField] private KeyCode toggleKey = KeyCode.M;
@@ -23,11 +24,17 @@ public class Order_UI_Controller : MonoBehaviour
 
     public void TogglePanel()
     {
+        if (orderManager != null && orderManager.HasActiveOrder)
+            return;
+
         SetPanelState(!IsOpen);
     }
 
     public void OpenPanel()
     {
+        if (orderManager != null && orderManager.HasActiveOrder)
+            return;
+
         SetPanelState(true);
     }
 
