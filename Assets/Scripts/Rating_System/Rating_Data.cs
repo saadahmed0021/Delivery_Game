@@ -6,40 +6,43 @@ using UnityEngine;
 )]
 public class Rating_Data : ScriptableObject
 {
-    [Header("Performance Weights")]
-    [Tooltip("How much delivery time affects the final score.")]
-    [Range(0f, 1f)]
-    [SerializeField] private float deliveryTimeWeight = 0.40f;
+    [Header("Penalty Settings")]
+    [Min(0f)]
+    [SerializeField] private float baseRating = 5f;
 
-    [Tooltip("How much package condition affects the final score.")]
-    [Range(0f, 1f)]
-    [SerializeField] private float packageConditionWeight = 0.25f;
+    [Min(0f)]
+    [Tooltip("Rating lost at 5-9 seconds late.")]
+    [SerializeField] private float ratingPenaltyAt5SecondsLate = 0.2f;
 
-    [Tooltip("How much driving performance affects the final score.")]
-    [Range(0f, 1f)]
-    [SerializeField] private float drivingPerformanceWeight = 0.20f;
+    [Tooltip("Rating lost at 10-19 seconds late.")]
+    [Min(0f)]
+    [SerializeField] private float ratingPenaltyAt10SecondsLate = 0.5f;
 
-    [Tooltip("How much successful completion affects the final score.")]
-    [Range(0f, 1f)]
-    [SerializeField] private float completionWeight = 0.15f;
+    [Tooltip("Rating lost at 20 or more seconds late.")]
+    [Min(0f)]
+    [SerializeField] private float ratingPenaltyAt20SecondsLate = 0.75f;
+
+    [Tooltip("Rating lost for each registered damage collision.")]
+    [Min(0f)]
+    [SerializeField] private float ratingPenaltyPerDamageCollision = 0.4f;
 
 
     [Header("Star Rating")]
     [Tooltip("Minimum score required for 5 stars.")]
-    [Range(0f, 100f)]
-    [SerializeField] private float fiveStarThreshold = 90f;
+    [Range(0f, 5f)]
+    [SerializeField] private float fiveStarThreshold = 5f;
 
     [Tooltip("Minimum score required for 4 stars.")]
-    [Range(0f, 100f)]
-    [SerializeField] private float fourStarThreshold = 75f;
+    [Range(0f, 5f)]
+    [SerializeField] private float fourStarThreshold = 4f;
 
     [Tooltip("Minimum score required for 3 stars.")]
-    [Range(0f, 100f)]
-    [SerializeField] private float threeStarThreshold = 60f;
+    [Range(0f, 5f)]
+    [SerializeField] private float threeStarThreshold = 3f;
 
     [Tooltip("Minimum score required for 2 stars.")]
-    [Range(0f, 100f)]
-    [SerializeField] private float twoStarThreshold = 40f;
+    [Range(0f, 5f)]
+    [SerializeField] private float twoStarThreshold = 2f;
 
 
     [Header("Score Limits")]
@@ -47,14 +50,15 @@ public class Rating_Data : ScriptableObject
     [SerializeField] private float minimumScore = 0f;
 
     [Min(0f)]
-    [SerializeField] private float maximumScore = 100f;
+    [SerializeField] private float maximumScore = 5f;
 
 
 
-    public float DeliveryTimeWeight => deliveryTimeWeight;
-    public float PackageConditionWeight => packageConditionWeight;
-    public float DrivingPerformanceWeight => drivingPerformanceWeight;
-    public float CompletionWeight => completionWeight;
+    public float BaseRating => baseRating;
+    public float RatingPenaltyAt5SecondsLate => ratingPenaltyAt5SecondsLate;
+    public float RatingPenaltyAt10SecondsLate => ratingPenaltyAt10SecondsLate;
+    public float RatingPenaltyAt20SecondsLate => ratingPenaltyAt20SecondsLate;
+    public float RatingPenaltyPerDamageCollision => ratingPenaltyPerDamageCollision;
 
 
 
@@ -73,27 +77,8 @@ public class Rating_Data : ScriptableObject
 
     private void OnValidate()
     {
-        ValidateWeights();
         ValidateThresholds();
         ValidateScoreLimits();
-    }
-
-    private void ValidateWeights()
-    {
-        float totalWeight =
-            deliveryTimeWeight +
-            packageConditionWeight +
-            drivingPerformanceWeight +
-            completionWeight;
-
-        if (!Mathf.Approximately(totalWeight, 1f))
-        {
-            Debug.LogWarning(
-                $"{name}: Rating weights should add up to 1.0. " +
-                $"Current total: {totalWeight:F2}",
-                this
-            );
-        }
     }
 
     private void ValidateThresholds()
@@ -127,6 +112,13 @@ public class Rating_Data : ScriptableObject
     {
         minimumScore = Mathf.Max(0f, minimumScore);
         maximumScore = Mathf.Max(minimumScore, maximumScore);
+        ratingPenaltyAt5SecondsLate = Mathf.Max(0f, ratingPenaltyAt5SecondsLate);
+        ratingPenaltyAt10SecondsLate = Mathf.Max(0f, ratingPenaltyAt10SecondsLate);
+        ratingPenaltyAt20SecondsLate = Mathf.Max(0f, ratingPenaltyAt20SecondsLate);
+        ratingPenaltyPerDamageCollision = Mathf.Max(
+            0f,
+            ratingPenaltyPerDamageCollision
+        );
     }
 
 #endif

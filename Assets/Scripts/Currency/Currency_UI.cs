@@ -90,13 +90,6 @@ public class Currency_UI : MonoBehaviour
         if (currencyText == null)
             return;
 
-        string symbol = string.Empty;
-
-        if (wallet.CurrencyData != null)
-        {
-            symbol = wallet.CurrencyData.CurrencySymbol;
-        }
-
-        currencyText.text = $"{symbol}{amount:N0}";
+        currencyText.text = amount.ToString("N0");
     }
 }

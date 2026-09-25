@@ -9,29 +9,22 @@ public class Rating_Calculator
     }
 
     public Rating_Result Calculate(
-        float deliveryTimeScore,
-        float packageConditionScore,
-        float drivingPerformanceScore,
-        float completionScore)
+        float lateDeliverySeconds,
+        int damageCollisionCount)
     {
         if (data == null)
         {
-            Debug.LogError("Rating Calculator: Rating_Data is not assigned.");
-
             return new Rating_Result(0f, 1);
         }
 
 
-        deliveryTimeScore = ClampScore(deliveryTimeScore);
-        packageConditionScore = ClampScore(packageConditionScore);
-        drivingPerformanceScore = ClampScore(drivingPerformanceScore);
-        completionScore = ClampScore(completionScore);
+        lateDeliverySeconds = Mathf.Max(0f, lateDeliverySeconds);
+        damageCollisionCount = Mathf.Max(0, damageCollisionCount);
 
-        float finalScore =
-            deliveryTimeScore * data.DeliveryTimeWeight +
-            packageConditionScore * data.PackageConditionWeight +
-            drivingPerformanceScore * data.DrivingPerformanceWeight +
-            completionScore * data.CompletionWeight;
+        float timePenalty = CalculateTimePenalty(lateDeliverySeconds);
+        float damagePenalty =
+            damageCollisionCount * data.RatingPenaltyPerDamageCollision;
+        float finalScore = data.BaseRating - timePenalty - damagePenalty;
 
         finalScore = Mathf.Clamp(
             finalScore,
@@ -39,13 +32,30 @@ public class Rating_Calculator
             data.MaximumScore
         );
 
-        int stars = CalculateStars(finalScore);
+        int stars = CalculateStars(finalScore, damageCollisionCount);
 
         return new Rating_Result(finalScore, stars);
     }
 
-    private int CalculateStars(float score)
+    private float CalculateTimePenalty(float lateDeliverySeconds)
     {
+        if (lateDeliverySeconds < 5f)
+            return 0f;
+
+        if (lateDeliverySeconds < 10f)
+            return data.RatingPenaltyAt5SecondsLate;
+
+        if (lateDeliverySeconds < 20f)
+            return data.RatingPenaltyAt10SecondsLate;
+
+        return data.RatingPenaltyAt20SecondsLate;
+    }
+
+    private int CalculateStars(float score, int damageCollisionCount)
+    {
+        if (damageCollisionCount > 0 && score <= data.MinimumScore)
+            return 0;
+
         if (score >= data.FiveStarThreshold)
             return 5;
 

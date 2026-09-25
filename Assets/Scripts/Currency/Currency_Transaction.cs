@@ -19,10 +19,6 @@ public class Currency_Transaction : MonoBehaviour
 
         if (currencyManager == null)
         {
-            Debug.LogError(
-                $"{nameof(Currency_Transaction)}: Currency Manager is not assigned or found.",
-                this
-            );
         }
     }
 

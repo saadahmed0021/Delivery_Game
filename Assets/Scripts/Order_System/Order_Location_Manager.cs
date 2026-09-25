@@ -50,11 +50,6 @@ public class Order_Location_Manager : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(locationID))
         {
-            Debug.LogError(
-                $"Order Location '{location.name}' has no Location ID.",
-                location
-            );
-
             return false;
         }
 
@@ -62,12 +57,6 @@ public class Order_Location_Manager : MonoBehaviour
         {
             if (existingLocation != location)
             {
-                Debug.LogError(
-                    $"Duplicate Order Location ID '{locationID}'. " +
-                    $"Already used by '{existingLocation.name}'.",
-                    location
-                );
-
                 return false;
             }
 

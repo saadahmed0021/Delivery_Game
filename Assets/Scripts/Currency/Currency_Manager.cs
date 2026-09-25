@@ -28,10 +28,6 @@ public class Currency_Manager : MonoBehaviour
     {
         if (wallet == null)
         {
-            Debug.LogError(
-                $"{nameof(Currency_Manager)}: Currency Wallet is not assigned.",
-                this
-            );
         }
     }
 

@@ -57,3 +57,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  maxLeanAngle: 35
+  leanSpeedReference: 15
+  leanSmoothness: 10
+  leanActivationSpeed: 5

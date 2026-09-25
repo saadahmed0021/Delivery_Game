@@ -27,33 +27,18 @@ public class Bike_Visuals : MonoBehaviour
 
         if (steering == null)
         {
-            Debug.LogError(
-                "Bike_Visuals requires a Bike_Steering reference.",
-                this
-            );
-
             enabled = false;
             return;
         }
 
         if (data == null)
         {
-            Debug.LogError(
-                "Bike_Data is not assigned in Bike_Visuals.",
-                this
-            );
-
             enabled = false;
             return;
         }
 
         if (frontSteeringPivot == null)
         {
-            Debug.LogError(
-                "Front Steering Pivot is not assigned in Bike_Visuals.",
-                this
-            );
-
             enabled = false;
             return;
         }

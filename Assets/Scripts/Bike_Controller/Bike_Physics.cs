@@ -20,22 +20,12 @@ public class Bike_Physics : MonoBehaviour
 
         if (bikeRigidbody == null)
         {
-            Debug.LogError(
-                "Bike_Physics requires a Rigidbody.",
-                this
-            );
-
             enabled = false;
             return;
         }
 
         if (data == null)
         {
-            Debug.LogError(
-                "Bike_Data is not assigned in Bike_Physics.",
-                this
-            );
-
             enabled = false;
             return;
         }

@@ -9,9 +9,13 @@ public class Order_Travel_Time : MonoBehaviour
     [SerializeField] private TMP_Text activeTimerText;
     [SerializeField] private Order_Manager orderManager;
     [SerializeField] private Order_Result_UI resultUI;
+    [SerializeField] private Rating_Manager ratingManager;
+    [SerializeField] private Order_Damage orderDamage;
 
     [Header("Travel Settings")]
     [SerializeField, Min(0.1f)] private float averageSpeed = 10f;
+    [Tooltip("Extra time added to both pickup and delivery.")]
+    [SerializeField, Min(0f)] private float extraDeliveryTime = 10f;
     [SerializeField] private int areaMask = NavMesh.AllAreas;
     [SerializeField, Min(0.1f)] private float sampleDistance = 5f;
 
@@ -24,10 +28,17 @@ public class Order_Travel_Time : MonoBehaviour
     private float deliveryTime;
 
     private float activeTimeRemaining;
+    private float deliveryElapsedTime;
+    private bool deliveryPhase;
     private bool countdownRunning;
 
     public bool IsCountdownRunning => countdownRunning;
     public float ActiveTimeRemaining => activeTimeRemaining;
+    public float DeliveryElapsedTime => deliveryElapsedTime;
+    public float LateDeliverySeconds => Mathf.Max(
+        0f,
+        deliveryElapsedTime - deliveryTime
+    );
     public string ActiveTimeFormatted => FormatTime(activeTimeRemaining);
 
     private void Awake()
@@ -39,6 +50,12 @@ public class Order_Travel_Time : MonoBehaviour
 
         if (orderManager == null)
             orderManager = FindFirstObjectByType<Order_Manager>();
+
+        if (ratingManager == null)
+            ratingManager = FindFirstObjectByType<Rating_Manager>();
+
+        if (orderDamage == null)
+            orderDamage = FindFirstObjectByType<Order_Damage>();
 
         if (resultUI == null)
         {
@@ -60,14 +77,23 @@ public class Order_Travel_Time : MonoBehaviour
             activeTimeRemaining - Time.deltaTime
         );
 
+        if (deliveryPhase)
+            deliveryElapsedTime += Time.deltaTime;
+
+        ratingManager?.UpdateLiveRating(
+            LateDeliverySeconds,
+            orderDamage != null ? orderDamage.Damage : 0f
+        );
+
         UpdateActiveTimerText();
 
-        if (activeTimeRemaining <= 0f)
+        if (activeTimeRemaining <= 0f && !deliveryPhase)
             HandleTimeout();
     }
 
     public Transform Player => player;
     public float AverageSpeed => averageSpeed;
+    public float ExtraDeliveryTime => extraDeliveryTime;
 
     public float PickupDistance => pickupDistance;
     public float PickupTime => pickupTime;
@@ -96,6 +122,7 @@ public class Order_Travel_Time : MonoBehaviour
         if (order == null || order.RestaurantLocation == null)
         {
             activeTimeRemaining = 0f;
+            deliveryPhase = false;
             countdownRunning = true;
             ShowActiveTimer();
             UpdateActiveTimerText();
@@ -107,6 +134,7 @@ public class Order_Travel_Time : MonoBehaviour
         );
 
         activeTimeRemaining = Mathf.Max(0f, pickupTime);
+        deliveryPhase = false;
         countdownRunning = true;
         ShowActiveTimer();
         UpdateActiveTimerText();
@@ -134,7 +162,13 @@ public class Order_Travel_Time : MonoBehaviour
 
         activeTimeRemaining = Mathf.Max(
             0f,
-            activeTimeRemaining + deliveryTime
+            deliveryTime
+        );
+        deliveryElapsedTime = 0f;
+        deliveryPhase = true;
+        ratingManager?.UpdateLiveRating(
+            0f,
+            orderDamage != null ? orderDamage.Damage : 0f
         );
 
         countdownRunning = true;
@@ -147,6 +181,7 @@ public class Order_Travel_Time : MonoBehaviour
     public void StopCountdown()
     {
         countdownRunning = false;
+        deliveryPhase = false;
         activeTimeRemaining = 0f;
 
         if (activeTimerText != null)
@@ -175,7 +210,7 @@ public class Order_Travel_Time : MonoBehaviour
         }
 
         pickupDistance = distance;
-        pickupTime = CalculateTime(distance);
+        pickupTime = CalculateTime(distance) + extraDeliveryTime;
 
         return true;
     }
@@ -200,7 +235,7 @@ public class Order_Travel_Time : MonoBehaviour
         }
 
         deliveryDistance = distance;
-        deliveryTime = CalculateTime(distance);
+        deliveryTime = CalculateTime(distance) + extraDeliveryTime;
 
         return true;
     }

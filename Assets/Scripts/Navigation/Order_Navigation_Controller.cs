@@ -108,12 +108,6 @@ public class Order_Navigation_Controller : MonoBehaviour
 
         if (restaurant == null)
         {
-            Debug.LogError(
-                $"Restaurant location '{order.RestaurantLocationID}' " +
-                $"could not be found for order '{order.OrderName}'.",
-                order
-            );
-
             return;
         }
 
@@ -124,28 +118,14 @@ public class Order_Navigation_Controller : MonoBehaviour
 
         if (!pathFound)
         {
-            Debug.LogError(
-                $"Could not calculate route to restaurant " +
-                $"for order '{order.OrderName}'.",
-                order
-            );
-
             return;
         }
-
-        Debug.Log(
-            $"Navigation started: Player → {order.RestaurantName}"
-        );
     }
 
     private void PickupOrder(Order order)
     {
         if (!orderManager.PickupOrder())
             return;
-
-        Debug.Log(
-            $"Order picked up from {order.RestaurantName}."
-        );
 
         StartCustomerNavigation(order);
     }
@@ -163,12 +143,6 @@ public class Order_Navigation_Controller : MonoBehaviour
 
         if (customer == null)
         {
-            Debug.LogError(
-                $"Customer location '{order.CustomerLocationID}' " +
-                $"could not be found for order '{order.OrderName}'.",
-                order
-            );
-
             return;
         }
 
@@ -179,18 +153,8 @@ public class Order_Navigation_Controller : MonoBehaviour
 
         if (!pathFound)
         {
-            Debug.LogError(
-                $"Could not calculate route to customer " +
-                $"for order '{order.OrderName}'.",
-                order
-            );
-
             return;
         }
-
-        Debug.Log(
-            $"Navigation started: Restaurant → {order.CustomerName}"
-        );
     }
 
     private void HandleCustomerNavigation(Order order)
@@ -215,10 +179,6 @@ public class Order_Navigation_Controller : MonoBehaviour
         if (!orderManager.DeliverOrder())
             return;
 
-        Debug.Log(
-            $"Order delivered to {order.CustomerName}."
-        );
-
         if (resultUI != null)
             resultUI.Show(order);
         else
@@ -229,10 +189,6 @@ public class Order_Navigation_Controller : MonoBehaviour
     {
         if (!orderManager.CompleteOrder())
             return;
-
-        Debug.Log(
-            $"Order completed: {order.OrderName}"
-        );
 
         trackedOrder = null;
 

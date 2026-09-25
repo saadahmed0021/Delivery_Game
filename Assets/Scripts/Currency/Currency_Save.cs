@@ -27,10 +27,6 @@ public class Currency_Save : MonoBehaviour
     {
         if (wallet == null)
         {
-            Debug.LogError(
-                $"{nameof(Currency_Save)}: Currency Wallet is not assigned.",
-                this
-            );
         }
     }
 

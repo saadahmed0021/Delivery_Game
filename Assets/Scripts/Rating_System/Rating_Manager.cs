@@ -8,6 +8,11 @@ public class Rating_Manager : MonoBehaviour
 
     private float totalRatingScore;
     private int completedDeliveries;
+    private float currentRating;
+    private float currentLateDeliverySeconds;
+    private int damageCollisionCount;
+    private bool orderInProgress;
+    private bool currentOrderFinalized;
 
     public float OverallRating
     {
@@ -24,52 +29,86 @@ public class Rating_Manager : MonoBehaviour
 
     public float TotalRatingScore => totalRatingScore;
 
+    public float CurrentRating => currentRating;
+    public int DamageCollisionCount => damageCollisionCount;
+
     public Rating_Calculator Calculator => ratingCalculator;
 
     private void Awake()
     {
         Initialize();
+
+        Order_Damage orderDamage = FindFirstObjectByType<Order_Damage>();
+
+        if (orderDamage != null)
+            orderDamage.DamageRegistered += RegisterDamage;
+    }
+
+    private void OnDestroy()
+    {
+        Order_Damage orderDamage = FindFirstObjectByType<Order_Damage>();
+
+        if (orderDamage != null)
+            orderDamage.DamageRegistered -= RegisterDamage;
     }
 
     private void Initialize()
     {
         if (ratingData == null)
         {
-            Debug.LogError(
-                "Rating Manager: Rating_Data is not assigned.",
-                this
-            );
-
             return;
         }
 
         ratingCalculator = new Rating_Calculator(ratingData);
+        currentRating = ratingData.BaseRating;
+    }
+
+    public void StartOrder()
+    {
+        currentRating = ratingData != null
+            ? ratingData.BaseRating
+            : 5f;
+        orderInProgress = true;
+        currentOrderFinalized = false;
+        currentLateDeliverySeconds = 0f;
+        damageCollisionCount = 0;
+    }
+
+    public void UpdateLiveRating(
+        float lateDeliverySeconds,
+        float damage)
+    {
+        if (!orderInProgress || currentOrderFinalized)
+            return;
+
+        if (ratingCalculator == null)
+            return;
+
+        currentLateDeliverySeconds = Mathf.Max(0f, lateDeliverySeconds);
+        currentRating = ratingCalculator.Calculate(
+            currentLateDeliverySeconds,
+            damageCollisionCount
+        ).Score;
     }
 
     public Rating_Result CompleteDelivery(
-        float deliveryTimeScore,
-        float packageConditionScore,
-        float drivingPerformanceScore,
-        float completionScore)
+        float lateDeliverySeconds,
+        float damage)
     {
         if (ratingCalculator == null)
         {
-            Debug.LogError(
-                "Rating Manager: Rating system is not initialized.",
-                this
-            );
-
             return new Rating_Result(0f, 1);
         }
 
         Rating_Result result = ratingCalculator.Calculate(
-            deliveryTimeScore,
-            packageConditionScore,
-            drivingPerformanceScore,
-            completionScore
+            lateDeliverySeconds,
+            damageCollisionCount
         );
 
+        currentRating = result.Score;
         AddDeliveryRating(result);
+        orderInProgress = false;
+        currentOrderFinalized = true;
 
         return result;
     }
@@ -91,6 +130,13 @@ public class Rating_Manager : MonoBehaviour
     {
         totalRatingScore = 0f;
         completedDeliveries = 0;
+        currentRating = ratingData != null
+            ? ratingData.BaseRating
+            : 5f;
+        orderInProgress = false;
+        currentOrderFinalized = false;
+        currentLateDeliverySeconds = 0f;
+        damageCollisionCount = 0;
     }
 
     public float GetOverallRating()
@@ -108,7 +154,23 @@ public class Rating_Manager : MonoBehaviour
 
     private void AddDeliveryRating(Rating_Result result)
     {
-        totalRatingScore += result.Stars;
+        totalRatingScore += result.Score;
         completedDeliveries++;
+    }
+
+    private void RegisterDamage()
+    {
+        if (!orderInProgress || currentOrderFinalized)
+            return;
+
+        damageCollisionCount++;
+
+        if (ratingCalculator != null)
+        {
+            currentRating = ratingCalculator.Calculate(
+                currentLateDeliverySeconds,
+                damageCollisionCount
+            ).Score;
+        }
     }
 }

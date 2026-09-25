@@ -21,11 +21,6 @@ public class Bike_Reverse : MonoBehaviour
 
         if (bikeRigidbody == null)
         {
-            Debug.LogError(
-                "Bike_Reverse requires a Rigidbody.",
-                this
-            );
-
             enabled = false;
             return;
         }
@@ -37,22 +32,12 @@ public class Bike_Reverse : MonoBehaviour
 
         if (input == null)
         {
-            Debug.LogError(
-                "Bike_Input is not assigned in Bike_Reverse.",
-                this
-            );
-
             enabled = false;
             return;
         }
 
         if (data == null)
         {
-            Debug.LogError(
-                "Bike_Data is not assigned in Bike_Reverse.",
-                this
-            );
-
             enabled = false;
         }
     }

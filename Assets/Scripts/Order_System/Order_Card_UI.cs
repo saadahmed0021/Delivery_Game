@@ -76,11 +76,6 @@ public class Order_Card_UI : MonoBehaviour
 
         if (detailsUI == null)
         {
-            Debug.LogWarning(
-                "Order Card UI: Order Details UI is not assigned.",
-                this
-            );
-
             return;
         }
 

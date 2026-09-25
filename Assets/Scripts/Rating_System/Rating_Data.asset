@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d92d1ce67dff32b419da9dd52ee005a0, type: 3}
   m_Name: Rating_Data
   m_EditorClassIdentifier: Assembly-CSharp::Rating_Data
-  deliveryTimeWeight: 0.4
-  packageConditionWeight: 0.25
-  drivingPerformanceWeight: 0.2
-  completionWeight: 0.15
-  fiveStarThreshold: 90
-  fourStarThreshold: 75
-  threeStarThreshold: 60
-  twoStarThreshold: 40
+  baseRating: 5
+  ratingPenaltyAt5SecondsLate: 0.2
+  ratingPenaltyAt10SecondsLate: 0.5
+  ratingPenaltyAt20SecondsLate: 0.75
+  ratingPenaltyAtFullDamage: 2
+  fiveStarThreshold: 5
+  fourStarThreshold: 4
+  threeStarThreshold: 3
+  twoStarThreshold: 2
   minimumScore: 0
-  maximumScore: 100
+  maximumScore: 5

@@ -8,6 +8,7 @@ public class Rating_UI : MonoBehaviour
     [SerializeField] private Rating_Manager ratingManager;
     [SerializeField] private GameObject ratingPanel;
     [SerializeField] private Image[] starImages;
+    [SerializeField] private Image[] emptyStarImages;
     [SerializeField] private Sprite filledStar;
     [SerializeField] private Sprite emptyStar;
     [SerializeField] private TMP_Text scoreText;
@@ -16,19 +17,30 @@ public class Rating_UI : MonoBehaviour
     [Header("Display")]
     [SerializeField] private bool showPanelOnStart;
 
+    private bool followsCurrentRating;
+
     private void Awake()
     {
         ValidateReferences();
+
+        followsCurrentRating = true;
 
         if (ratingPanel != null)
             ratingPanel.SetActive(showPanelOnStart);
     }
 
+    private void Update()
+    {
+        if (followsCurrentRating && ratingManager != null)
+            UpdateRatingDisplay(ratingManager.CurrentRating);
+    }
+
     public void ShowDeliveryResult(Rating_Result result)
     {
-        UpdateStars(result.Stars);
+        followsCurrentRating = true;
+        UpdateRatingDisplay(result.Score);
         UpdateScore(result.Score);
-        UpdateRating(result.Stars);
+        UpdateRating(result.Score);
         ShowPanel();
     }
 
@@ -39,7 +51,8 @@ public class Rating_UI : MonoBehaviour
 
         float overallRating = ratingManager.GetOverallRating();
 
-        UpdateStars(Mathf.RoundToInt(overallRating));
+        followsCurrentRating = false;
+        UpdateRatingDisplay(overallRating);
         UpdateScore(overallRating);
         UpdateRating(overallRating);
 
@@ -60,7 +73,8 @@ public class Rating_UI : MonoBehaviour
 
     public void Clear()
     {
-        UpdateStars(0);
+        followsCurrentRating = false;
+        UpdateRatingDisplay(0f);
 
         if (scoreText != null)
             scoreText.text = "0";
@@ -69,21 +83,31 @@ public class Rating_UI : MonoBehaviour
             ratingText.text = "0.0";
     }
 
-    private void UpdateStars(int stars)
+    private void UpdateRatingDisplay(float rating)
     {
+        rating = Mathf.Clamp(rating, 0f, 5f);
+
         if (starImages == null)
             return;
 
-        stars = Mathf.Clamp(stars, 0, 5);
-
         for (int i = 0; i < starImages.Length; i++)
         {
+            if (emptyStarImages != null &&
+                i < emptyStarImages.Length &&
+                emptyStarImages[i] != null)
+            {
+                emptyStarImages[i].sprite = emptyStar;
+                emptyStarImages[i].type = Image.Type.Simple;
+            }
+
             if (starImages[i] == null)
                 continue;
 
-            starImages[i].sprite = i < stars
-                ? filledStar
-                : emptyStar;
+            starImages[i].sprite = filledStar;
+            starImages[i].type = Image.Type.Filled;
+            starImages[i].fillMethod = Image.FillMethod.Horizontal;
+            starImages[i].fillOrigin = (int)Image.OriginHorizontal.Left;
+            starImages[i].fillAmount = Mathf.Clamp01(rating - i);
         }
     }
 
@@ -92,7 +116,7 @@ public class Rating_UI : MonoBehaviour
         if (scoreText == null)
             return;
 
-        scoreText.text = $"{score:F0}";
+        scoreText.text = $"{score:F1}";
     }
 
     private void UpdateRating(float rating)
@@ -105,19 +129,5 @@ public class Rating_UI : MonoBehaviour
 
     private void ValidateReferences()
     {
-        if (ratingManager == null)
-            Debug.LogError("Rating UI: Rating_Manager is not assigned.", this);
-
-        if (ratingPanel == null)
-            Debug.LogError("Rating UI: Rating Panel is not assigned.", this);
-
-        if (starImages == null || starImages.Length == 0)
-            Debug.LogError("Rating UI: Star Images are not assigned.", this);
-
-        if (filledStar == null)
-            Debug.LogError("Rating UI: Filled Star sprite is not assigned.", this);
-
-        if (emptyStar == null)
-            Debug.LogError("Rating UI: Empty Star sprite is not assigned.", this);
     }
 }

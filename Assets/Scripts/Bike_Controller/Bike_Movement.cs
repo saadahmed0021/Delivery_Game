@@ -10,6 +10,8 @@ public class Bike_Movement : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private float currentSpeed;
 
+    public float CurrentSpeed => currentSpeed;
+
     private Rigidbody bikeRigidbody;
 
     private void Awake()
@@ -18,33 +20,18 @@ public class Bike_Movement : MonoBehaviour
 
         if (bikeRigidbody == null)
         {
-            Debug.LogError(
-                "Bike_Movement requires a Rigidbody.",
-                this
-            );
-
             enabled = false;
             return;
         }
 
         if (input == null)
         {
-            Debug.LogError(
-                "Bike_Input is not assigned in Bike_Movement.",
-                this
-            );
-
             enabled = false;
             return;
         }
 
         if (data == null)
         {
-            Debug.LogError(
-                "Bike_Data is not assigned in Bike_Movement.",
-                this
-            );
-
             enabled = false;
             return;
         }
@@ -56,11 +43,6 @@ public class Bike_Movement : MonoBehaviour
 
         if (steering == null)
         {
-            Debug.LogError(
-                "Bike_Movement requires a Bike_Steering component.",
-                this
-            );
-
             enabled = false;
             return;
         }
@@ -149,12 +131,6 @@ public class Bike_Movement : MonoBehaviour
             ForceMode.Acceleration
         );
 
-        Debug.Log(
-    "MOVEMENT BRAKE | Speed: " +
-    GetForwardSpeed() +
-    " | Brake: " +
-    input.Brake
-);
     }
 
     private void ApplyRollingResistance()

@@ -69,11 +69,6 @@ public class Order : MonoBehaviour
     {
         if (orderData == null)
         {
-            Debug.LogError(
-                "Order cannot be initialized with null Order_Data.",
-                this
-            );
-
             return;
         }
 
@@ -146,55 +141,28 @@ public class Order : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(RestaurantLocationID))
         {
-            Debug.LogError(
-                $"Order '{OrderName}' has no restaurant Location ID.",
-                this
-            );
-
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(CustomerLocationID))
         {
-            Debug.LogError(
-                $"Order '{OrderName}' has no customer Location ID.",
-                this
-            );
-
             return false;
         }
 
         if (Order_Location_Manager.Instance == null)
         {
-            Debug.LogError(
-                "Order_Location_Manager instance was not found.",
-                this
-            );
-
             return false;
         }
 
         if (!Order_Location_Manager.Instance.HasLocation(
                 RestaurantLocationID))
         {
-            Debug.LogError(
-                $"Restaurant Location ID '{RestaurantLocationID}' " +
-                $"was not found for order '{OrderName}'.",
-                this
-            );
-
             return false;
         }
 
         if (!Order_Location_Manager.Instance.HasLocation(
                 CustomerLocationID))
         {
-            Debug.LogError(
-                $"Customer Location ID '{CustomerLocationID}' " +
-                $"was not found for order '{OrderName}'.",
-                this
-            );
-
             return false;
         }
 

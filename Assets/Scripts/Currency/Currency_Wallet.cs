@@ -22,11 +22,6 @@ public class Currency_Wallet : MonoBehaviour
     {
         if (currencyData == null)
         {
-            Debug.LogError(
-                $"{nameof(Currency_Wallet)}: Currency Data is not assigned.",
-                this
-            );
-
             return;
         }
 

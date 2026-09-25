@@ -47,7 +47,6 @@ public class Order_UI_Controller : MonoBehaviour
     {
         if (orderPanel == null)
         {
-            Debug.LogWarning("Order UI Controller: Order Panel is not assigned.", this);
             return;
         }
 

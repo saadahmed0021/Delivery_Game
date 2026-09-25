@@ -43,33 +43,18 @@ public class Bike_Steering : MonoBehaviour
 
         if (bikeRigidbody == null)
         {
-            Debug.LogError(
-                "Bike_Steering requires a Rigidbody.",
-                this
-            );
-
             enabled = false;
             return;
         }
 
         if (input == null)
         {
-            Debug.LogError(
-                "Bike_Input is not assigned in Bike_Steering.",
-                this
-            );
-
             enabled = false;
             return;
         }
 
         if (data == null)
         {
-            Debug.LogError(
-                "Bike_Data is not assigned in Bike_Steering.",
-                this
-            );
-
             enabled = false;
             return;
         }

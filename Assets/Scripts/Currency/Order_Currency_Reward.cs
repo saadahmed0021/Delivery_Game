@@ -24,10 +24,6 @@ public class Order_Currency_Reward : MonoBehaviour
 
         if (currencyTransaction == null)
         {
-            Debug.LogError(
-                $"{nameof(Order_Currency_Reward)}: Currency Transaction is not assigned.",
-                this
-            );
         }
     }
 

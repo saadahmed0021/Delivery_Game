@@ -34,25 +34,21 @@ public class Order_UI : MonoBehaviour
 
         if (orderManager == null)
         {
-            Debug.LogWarning("Order UI: Order Manager is not assigned.", this);
             return;
         }
 
         if (orderCardPrefab == null)
         {
-            Debug.LogWarning("Order UI: Order Card Prefab is not assigned.", this);
             return;
         }
 
         if (orderCardContainer == null)
         {
-            Debug.LogWarning("Order UI: Order Card Container is not assigned.", this);
             return;
         }
 
         if (detailsUI == null)
         {
-            Debug.LogWarning("Order UI: Order Details UI is not assigned.", this);
             return;
         }
 

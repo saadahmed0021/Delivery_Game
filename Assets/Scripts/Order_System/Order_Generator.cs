@@ -71,11 +71,6 @@ public class Order_Generator : MonoBehaviour
 
         if (orderManager == null)
         {
-            Debug.LogError(
-                "Order Generator: Order Manager is not assigned.",
-                this
-            );
-
             return null;
         }
 
@@ -162,11 +157,6 @@ public class Order_Generator : MonoBehaviour
     {
         if (orderManager == null)
         {
-            Debug.LogError(
-                "Order Generator: Order Manager is not assigned.",
-                this
-            );
-
             return false;
         }
 
@@ -177,21 +167,11 @@ public class Order_Generator : MonoBehaviour
     {
         if (orderPrefab == null)
         {
-            Debug.LogError(
-                "Order Generator: Order Prefab is not assigned.",
-                this
-            );
-
             return false;
         }
 
         if (orderDataList == null || orderDataList.Count == 0)
         {
-            Debug.LogError(
-                "Order Generator: No Order Data assets assigned.",
-                this
-            );
-
             return false;
         }
 

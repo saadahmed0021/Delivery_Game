@@ -66,10 +66,6 @@ public class Rating_Save : MonoBehaviour
     {
         if (ratingManager == null)
         {
-            Debug.LogError(
-                "Rating Save: Rating_Manager is not assigned.",
-                this
-            );
         }
     }
 }

@@ -6,6 +6,9 @@ public class Order_Manager : MonoBehaviour
     [SerializeField] private Order_Currency_Reward currencyReward;
     [SerializeField] private Order_Travel_Time travelTime;
     [SerializeField] private Order_Generator orderGenerator;
+    [SerializeField] private Rating_Manager ratingManager;
+    [SerializeField] private Rating_UI ratingUI;
+    [SerializeField] private Order_Damage orderDamage;
 
     private readonly List<Order> availableOrders = new();
 
@@ -91,7 +94,20 @@ public class Order_Manager : MonoBehaviour
         if (travelTime == null)
             travelTime = FindFirstObjectByType<Order_Travel_Time>();
 
+        if (ratingManager == null)
+            ratingManager = FindFirstObjectByType<Rating_Manager>();
+
+        if (ratingUI == null)
+            ratingUI = FindFirstObjectByType<Rating_UI>(
+                FindObjectsInactive.Include
+            );
+
+        if (orderDamage == null)
+            orderDamage = FindFirstObjectByType<Order_Damage>();
+
         currencyReward?.ResetReward();
+        orderDamage?.ResetDamage();
+        ratingManager?.StartOrder();
         travelTime?.StartPickupCountdown(activeOrder);
 
         return true;
@@ -152,7 +168,24 @@ public class Order_Manager : MonoBehaviour
         if (travelTime == null)
             travelTime = FindFirstObjectByType<Order_Travel_Time>();
 
+        if (ratingManager == null)
+            ratingManager = FindFirstObjectByType<Rating_Manager>();
+
+        if (ratingUI == null)
+            ratingUI = FindFirstObjectByType<Rating_UI>(
+                FindObjectsInactive.Include
+            );
+
         travelTime?.StopCountdown();
+
+        Rating_Result result = ratingManager != null
+            ? ratingManager.CompleteDelivery(
+                travelTime != null ? travelTime.LateDeliverySeconds : 0f,
+                orderDamage != null ? orderDamage.Damage : 0f
+            )
+            : new Rating_Result(0f, 1);
+
+        ratingUI?.ShowDeliveryResult(result);
 
         int replacedOrderIndex = activeOrderSlotIndex;
         activeOrder = null;
