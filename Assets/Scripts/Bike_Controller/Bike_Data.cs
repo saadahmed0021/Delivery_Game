@@ -17,6 +17,19 @@ public class Bike_Data : ScriptableObject
     [Min(0f)] public float highSpeedSteeringMultiplier = 0.35f;
     [Min(0.1f)] public float steeringSpeedReference = 20f;
 
+    [Header("Lean")]
+    [Tooltip("Bike must be faster than this speed before visual leaning starts.")]
+    [Min(0f)] public float leanActivationSpeed = 5f;
+
+    [Tooltip("Maximum visual lean angle in degrees.")]
+    [Min(0f)] public float maximumLeanAngle = 30f;
+
+    [Tooltip("How quickly the bike reaches the target lean angle.")]
+    [Min(0f)] public float leanSmoothness = 8f;
+
+    [Tooltip("Flip this if the bike leans in the opposite direction.")]
+    public bool invertLeanDirection = false;
+
     [Header("Low Speed Balance")]
     [Min(0f)] public float idleBalanceSpeed = 0.5f;
     [Min(0f)] public float lowSpeedBalanceSpeed = 3f;

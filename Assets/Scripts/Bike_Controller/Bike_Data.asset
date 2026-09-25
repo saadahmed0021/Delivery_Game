@@ -18,10 +18,14 @@ MonoBehaviour:
   brakeForce: 1
   reverseSpeed: 100
   maxSteeringAngle: 20
-  steeringSpeed: 50
-  lowSpeedSteeringMultiplier: 1
+  steeringSpeed: 100
+  lowSpeedSteeringMultiplier: 2
   highSpeedSteeringMultiplier: 0.35
   steeringSpeedReference: 20
+  leanActivationSpeed: 5
+  maximumLeanAngle: 30
+  leanSmoothness: 8
+  invertLeanDirection: 0
   idleBalanceSpeed: 0.5
   lowSpeedBalanceSpeed: 3
   idleBalanceStrength: 25
@@ -57,7 +61,3 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  maxLeanAngle: 35
-  leanSpeedReference: 15
-  leanSmoothness: 10
-  leanActivationSpeed: 5
