@@ -7,6 +7,9 @@ public class Bike_Movement : MonoBehaviour
     [SerializeField] private Bike_Data data;
     [SerializeField] private Bike_Steering steering;
 
+    [Header("Lateral Grip")]
+    [SerializeField] private float lateralGrip = 12f;
+
     [Header("Debug")]
     [SerializeField] private float currentSpeed;
 
@@ -54,14 +57,11 @@ public class Bike_Movement : MonoBehaviour
     {
         ApplyThrottle();
         ApplyBraking();
-
         ApplyRollingResistance();
         ApplyAerodynamicDrag();
-
         ApplySteering();
-
+        ApplyLateralGrip();
         LimitForwardSpeed();
-
         UpdateSpeedDisplay();
     }
 
@@ -74,13 +74,11 @@ public class Bike_Movement : MonoBehaviour
 
         float forwardSpeed = GetForwardSpeed();
 
-        // Do not accelerate backwards.
         if (forwardSpeed < -0.1f)
         {
             return;
         }
 
-        // Maximum forward speed reached.
         if (forwardSpeed >= data.maxSpeed)
         {
             return;
@@ -130,7 +128,6 @@ public class Bike_Movement : MonoBehaviour
             brakeForce,
             ForceMode.Acceleration
         );
-
     }
 
     private void ApplyRollingResistance()
@@ -202,29 +199,6 @@ public class Bike_Movement : MonoBehaviour
         float steeringAngle =
             steering.CurrentSteeringAngle;
 
-        if (Mathf.Abs(steeringAngle) <= 0.01f)
-        {
-            return;
-        }
-
-        Vector3 velocity =
-            bikeRigidbody.linearVelocity;
-
-        Vector3 horizontalVelocity =
-            new Vector3(
-                velocity.x,
-                0f,
-                velocity.z
-            );
-
-        float speed =
-            horizontalVelocity.magnitude;
-
-        if (speed <= 0.1f)
-        {
-            return;
-        }
-
         float forwardSpeed =
             GetForwardSpeed();
 
@@ -232,6 +206,14 @@ public class Bike_Movement : MonoBehaviour
         {
             return;
         }
+
+        if (Mathf.Abs(steeringAngle) <= 0.01f)
+        {
+            return;
+        }
+
+        float speed =
+            Mathf.Abs(forwardSpeed);
 
         float speedFactor =
             Mathf.Clamp01(
@@ -273,6 +255,21 @@ public class Bike_Movement : MonoBehaviour
                 0f
             );
 
+        bikeRigidbody.MoveRotation(
+            bikeRigidbody.rotation *
+            rotation
+        );
+
+        Vector3 velocity =
+            bikeRigidbody.linearVelocity;
+
+        Vector3 horizontalVelocity =
+            new Vector3(
+                velocity.x,
+                0f,
+                velocity.z
+            );
+
         Vector3 newVelocity =
             rotation *
             horizontalVelocity;
@@ -283,11 +280,27 @@ public class Bike_Movement : MonoBehaviour
                 velocity.y,
                 newVelocity.z
             );
+    }
 
-        bikeRigidbody.MoveRotation(
-            bikeRigidbody.rotation *
-            rotation
-        );
+    private void ApplyLateralGrip()
+    {
+        Vector3 localVelocity =
+            transform.InverseTransformDirection(
+                bikeRigidbody.linearVelocity
+            );
+
+        localVelocity.x =
+            Mathf.Lerp(
+                localVelocity.x,
+                0f,
+                lateralGrip *
+                Time.fixedDeltaTime
+            );
+
+        bikeRigidbody.linearVelocity =
+            transform.TransformDirection(
+                localVelocity
+            );
     }
 
     private void LimitForwardSpeed()

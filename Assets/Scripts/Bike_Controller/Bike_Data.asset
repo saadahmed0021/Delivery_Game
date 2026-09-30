@@ -23,9 +23,9 @@ MonoBehaviour:
   highSpeedSteeringMultiplier: 0.35
   steeringSpeedReference: 20
   leanActivationSpeed: 5
-  maximumLeanAngle: 30
+  maxLeanAngle: 30
+  leanSpeedReference: 15
   leanSmoothness: 8
-  invertLeanDirection: 0
   idleBalanceSpeed: 0.5
   lowSpeedBalanceSpeed: 3
   idleBalanceStrength: 25

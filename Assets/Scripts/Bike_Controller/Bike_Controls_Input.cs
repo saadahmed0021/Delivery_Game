@@ -59,11 +59,13 @@ using UnityEngine.InputSystem.Utilities;
 ///     // Invoked when "Move" action is either started, performed or canceled.
 ///     public void OnMove(InputAction.CallbackContext context)
 ///     {
+///         Debug.Log($"OnMove: {context.ReadValue&lt;Vector2&gt;()}");
 ///     }
 ///
 ///     // Invoked when "Attack" action is either started, performed or canceled.
 ///     public void OnAttack(InputAction.CallbackContext context)
 ///     {
+///         Debug.Log($"OnAttack: {context.ReadValue&lt;float&gt;()}");
 ///     }
 ///
 ///     #endregion
@@ -134,6 +136,15 @@ public partial class @Bike_Controls_Input: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Camera"",
+                    ""type"": ""Value"",
+                    ""id"": ""bf969be1-cbbb-4fa9-a22b-40988a5e89a5"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -213,6 +224,17 @@ public partial class @Bike_Controls_Input: IInputActionCollection2, IDisposable
                     ""action"": ""Reset"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""37f030c1-5cb2-474c-97bf-c7b21e8c28b1"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -226,10 +248,12 @@ public partial class @Bike_Controls_Input: IInputActionCollection2, IDisposable
         m_Bike_Steering = m_Bike.FindAction("Steering", throwIfNotFound: true);
         m_Bike_Handbrake = m_Bike.FindAction("Handbrake", throwIfNotFound: true);
         m_Bike_Reset = m_Bike.FindAction("Reset", throwIfNotFound: true);
+        m_Bike_Camera = m_Bike.FindAction("Camera", throwIfNotFound: true);
     }
 
     ~@Bike_Controls_Input()
     {
+        UnityEngine.Debug.Assert(!m_Bike.enabled, "This will cause a leak and performance issues, Bike_Controls_Input.Bike.Disable() has not been called.");
     }
 
     /// <summary>
@@ -310,6 +334,7 @@ public partial class @Bike_Controls_Input: IInputActionCollection2, IDisposable
     private readonly InputAction m_Bike_Steering;
     private readonly InputAction m_Bike_Handbrake;
     private readonly InputAction m_Bike_Reset;
+    private readonly InputAction m_Bike_Camera;
     /// <summary>
     /// Provides access to input actions defined in input action map "Bike".
     /// </summary>
@@ -341,6 +366,10 @@ public partial class @Bike_Controls_Input: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Bike/Reset".
         /// </summary>
         public InputAction @Reset => m_Wrapper.m_Bike_Reset;
+        /// <summary>
+        /// Provides access to the underlying input action "Bike/Camera".
+        /// </summary>
+        public InputAction @Camera => m_Wrapper.m_Bike_Camera;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -382,6 +411,9 @@ public partial class @Bike_Controls_Input: IInputActionCollection2, IDisposable
             @Reset.started += instance.OnReset;
             @Reset.performed += instance.OnReset;
             @Reset.canceled += instance.OnReset;
+            @Camera.started += instance.OnCamera;
+            @Camera.performed += instance.OnCamera;
+            @Camera.canceled += instance.OnCamera;
         }
 
         /// <summary>
@@ -408,6 +440,9 @@ public partial class @Bike_Controls_Input: IInputActionCollection2, IDisposable
             @Reset.started -= instance.OnReset;
             @Reset.performed -= instance.OnReset;
             @Reset.canceled -= instance.OnReset;
+            @Camera.started -= instance.OnCamera;
+            @Camera.performed -= instance.OnCamera;
+            @Camera.canceled -= instance.OnCamera;
         }
 
         /// <summary>
@@ -483,5 +518,12 @@ public partial class @Bike_Controls_Input: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnReset(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Camera" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCamera(InputAction.CallbackContext context);
     }
 }
