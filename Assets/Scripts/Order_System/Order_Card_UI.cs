@@ -12,8 +12,10 @@ public class Order_Card_UI : MonoBehaviour
     [SerializeField] private TMP_Text travelTimeText;
     [SerializeField] private Button selectButton;
 
-    private Order_Details_UI detailsUI;
+    private Order_Manager orderManager;
+    private Order_UI ordersUI;
     private Order order;
+    private bool hasStartedOrder;
 
     public Order Order => order;
 
@@ -29,18 +31,15 @@ public class Order_Card_UI : MonoBehaviour
             selectButton.onClick.RemoveListener(SelectOrder);
     }
 
-    public void Setup(Order targetOrder, Order_Details_UI targetDetailsUI)
-    {
-        Setup(targetOrder, targetDetailsUI, string.Empty);
-    }
-
     public void Setup(
         Order targetOrder,
-        Order_Details_UI targetDetailsUI,
+        Order_Manager targetOrderManager,
+        Order_UI targetOrdersUI,
         string pickupTimeFormatted)
     {
         order = targetOrder;
-        detailsUI = targetDetailsUI;
+        orderManager = targetOrderManager;
+        ordersUI = targetOrdersUI;
 
         if (order == null)
         {
@@ -71,15 +70,14 @@ public class Order_Card_UI : MonoBehaviour
 
     private void SelectOrder()
     {
-        if (order == null)
+        if (order == null || orderManager == null || hasStartedOrder)
             return;
 
-        if (detailsUI == null)
-        {
+        if (!orderManager.AcceptOrder(order))
             return;
-        }
 
-        detailsUI.Show(order);
+        hasStartedOrder = true;
+        ordersUI?.Close();
     }
 
     private void Clear()

@@ -12,6 +12,12 @@ public class Order_Pickup : MonoBehaviour
     [Header("Interaction")]
     [SerializeField, Min(0.1f)] private float pickupRadius = 2f;
 
+    [Header("Pickup Arrow")]
+    [SerializeField] private GameObject pickupArrowPrefab;
+    [SerializeField] private float arrowHeight = 2f;
+
+    private GameObject spawnedArrow;
+
     public Transform PickupPoint => pickupPoint != null ? pickupPoint : transform;
 
     public bool CanPickup =>
@@ -28,6 +34,30 @@ public class Order_Pickup : MonoBehaviour
             pickupPoint = transform;
     }
 
+    public void SpawnArrow()
+    {
+        if (pickupArrowPrefab == null || spawnedArrow != null)
+            return;
+
+        Vector3 spawnPosition = PickupPoint.position;
+        spawnPosition.y += arrowHeight;
+
+        spawnedArrow = Instantiate(
+            pickupArrowPrefab,
+            spawnPosition,
+            pickupArrowPrefab.transform.rotation
+        );
+    }
+
+    public void DestroyArrow()
+    {
+        if (spawnedArrow == null)
+            return;
+
+        Destroy(spawnedArrow);
+        spawnedArrow = null;
+    }
+
     public bool TryPickup()
     {
         if (!HasValidOrder())
@@ -36,7 +66,12 @@ public class Order_Pickup : MonoBehaviour
         if (!IsPlayerInRange())
             return false;
 
-        return orderManager.PickupOrder();
+        bool pickedUp = orderManager.PickupOrder();
+
+        if (pickedUp)
+            DestroyArrow();
+
+        return pickedUp;
     }
 
     private bool HasValidOrder()
@@ -69,7 +104,6 @@ public class Order_Pickup : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Transform point = pickupPoint != null ? pickupPoint : transform;
-
         Gizmos.DrawWireSphere(point.position, pickupRadius);
     }
 }

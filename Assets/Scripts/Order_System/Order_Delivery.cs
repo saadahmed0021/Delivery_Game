@@ -13,6 +13,12 @@ public class Order_Delivery : MonoBehaviour
     [Header("Interaction")]
     [SerializeField, Min(0.1f)] private float deliveryRadius = 2f;
 
+    [Header("Delivery Arrow")]
+    [SerializeField] private GameObject deliveryArrowPrefab;
+    [SerializeField] private float arrowHeight = 2f;
+
+    private GameObject spawnedArrow;
+
     public Transform DeliveryPoint =>
         deliveryPoint != null ? deliveryPoint : transform;
 
@@ -33,6 +39,30 @@ public class Order_Delivery : MonoBehaviour
             resultUI = FindFirstObjectByType<Order_Result_UI>(
                 FindObjectsInactive.Include
             );
+    }
+
+    public void SpawnArrow()
+    {
+        if (deliveryArrowPrefab == null || spawnedArrow != null)
+            return;
+
+        Vector3 spawnPosition = DeliveryPoint.position;
+        spawnPosition.y += arrowHeight;
+
+        spawnedArrow = Instantiate(
+            deliveryArrowPrefab,
+            spawnPosition,
+            deliveryArrowPrefab.transform.rotation
+        );
+    }
+
+    public void DestroyArrow()
+    {
+        if (spawnedArrow == null)
+            return;
+
+        Destroy(spawnedArrow);
+        spawnedArrow = null;
     }
 
     public bool TryDeliver()

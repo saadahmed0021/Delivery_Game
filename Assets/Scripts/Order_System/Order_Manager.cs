@@ -13,6 +13,8 @@ public class Order_Manager : MonoBehaviour
     private readonly List<Order> availableOrders = new();
 
     private Order activeOrder;
+    private Order_Pickup activePickup;
+    private Order_Delivery activeDelivery;
     private int activeOrderSlotIndex = -1;
 
     public IReadOnlyList<Order> AvailableOrders => availableOrders;
@@ -77,16 +79,19 @@ public class Order_Manager : MonoBehaviour
             return false;
 
         int orderIndex = availableOrders.IndexOf(order);
-
         if (orderIndex < 0)
             return false;
 
         if (!order.Accept())
             return false;
 
+        ClearActivePickupArrow();
+        ClearActiveDeliveryArrow();
         activeOrder = order;
         activeOrderSlotIndex = orderIndex;
         availableOrders.RemoveAt(orderIndex);
+        activePickup = FindPickup(activeOrder.RestaurantLocation);
+        activePickup?.SpawnArrow();
 
         if (currencyReward == null)
             currencyReward = GetComponent<Order_Currency_Reward>();
@@ -121,6 +126,10 @@ public class Order_Manager : MonoBehaviour
         if (!activeOrder.Pickup())
             return false;
 
+        ClearActivePickupArrow();
+        activeDelivery = FindDelivery(activeOrder.CustomerLocation);
+        activeDelivery?.SpawnArrow();
+
         if (travelTime == null)
             travelTime = FindFirstObjectByType<Order_Travel_Time>();
 
@@ -136,6 +145,8 @@ public class Order_Manager : MonoBehaviour
 
         if (!activeOrder.Deliver())
             return false;
+
+        ClearActiveDeliveryArrow();
 
         if (travelTime == null)
             travelTime = FindFirstObjectByType<Order_Travel_Time>();
@@ -164,6 +175,8 @@ public class Order_Manager : MonoBehaviour
 
         if (!activeOrder.Complete())
             return false;
+
+        ClearActiveDeliveryArrow();
 
         if (travelTime == null)
             travelTime = FindFirstObjectByType<Order_Travel_Time>();
@@ -212,6 +225,9 @@ public class Order_Manager : MonoBehaviour
         if (!activeOrder.Cancel())
             return false;
 
+        ClearActivePickupArrow();
+        ClearActiveDeliveryArrow();
+
         if (travelTime == null)
             travelTime = FindFirstObjectByType<Order_Travel_Time>();
 
@@ -220,6 +236,56 @@ public class Order_Manager : MonoBehaviour
         activeOrder = null;
 
         return true;
+    }
+
+    private Order_Pickup FindPickup(Order_Location restaurantLocation)
+    {
+        if (restaurantLocation == null)
+            return null;
+
+        Order_Pickup pickup =
+            restaurantLocation.GetComponent<Order_Pickup>();
+
+        if (pickup != null)
+            return pickup;
+
+        pickup = restaurantLocation.GetComponentInParent<Order_Pickup>();
+
+        if (pickup != null)
+            return pickup;
+
+        return restaurantLocation.GetComponentInChildren<Order_Pickup>(true);
+    }
+
+    private Order_Delivery FindDelivery(Order_Location customerLocation)
+    {
+        if (customerLocation == null)
+            return null;
+
+        Order_Delivery delivery =
+            customerLocation.GetComponent<Order_Delivery>();
+
+        if (delivery != null)
+            return delivery;
+
+        delivery = customerLocation.GetComponentInParent<Order_Delivery>();
+
+        if (delivery != null)
+            return delivery;
+
+        return customerLocation.GetComponentInChildren<Order_Delivery>(true);
+    }
+
+    private void ClearActivePickupArrow()
+    {
+        activePickup?.DestroyArrow();
+        activePickup = null;
+    }
+
+    private void ClearActiveDeliveryArrow()
+    {
+        activeDelivery?.DestroyArrow();
+        activeDelivery = null;
     }
 
     public void ClearAvailableOrders()

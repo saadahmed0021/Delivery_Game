@@ -15,6 +15,6 @@ MonoBehaviour:
   orderName: Ice Crean
   restaurantName: Soft Swirl
   customerName: Ahmed
-  baseReward: 10
+  baseReward: 450
   restaurantLocationID: 4
-  customerLocationID: 5
+  customerLocationID: 9

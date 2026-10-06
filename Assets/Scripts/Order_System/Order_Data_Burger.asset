@@ -15,6 +15,6 @@ MonoBehaviour:
   orderName: Burgur Deal
   restaurantName: Ranchers
   customerName: Birdie
-  baseReward: 10
+  baseReward: 1000
   restaurantLocationID: 2
-  customerLocationID: 5
+  customerLocationID: 9

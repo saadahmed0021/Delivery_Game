@@ -9,7 +9,7 @@ public class Order_Generator : MonoBehaviour
     [SerializeField] private Transform orderContainer;
 
     [Header("Order Pool")]
-    [SerializeField, Min(1)] private int orderCount = 3;
+    [SerializeField, Min(1)] private int orderCount = 4;
     [SerializeField] private List<Order_Data> orderDataList = new();
 
     [Header("Card Positions")]
@@ -47,7 +47,7 @@ public class Order_Generator : MonoBehaviour
         if (!ValidateGeneratorSetup())
             return generatedOrders;
 
-        int count = Mathf.Min(orderCount, orderDataList.Count);
+        int count = Mathf.Min(orderCount, 4);
 
         List<Order_Data> availableData = new(orderDataList);
 
@@ -55,7 +55,11 @@ public class Order_Generator : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            Order order = CreateOrder(availableData[i], i);
+            Order_Data data = i < availableData.Count
+                ? availableData[i]
+                : orderDataList[Random.Range(0, orderDataList.Count)];
+
+            Order order = CreateOrder(data, i);
 
             if (order != null)
                 generatedOrders.Add(order);
@@ -137,7 +141,8 @@ public class Order_Generator : MonoBehaviour
                 return thirdCardPosition;
 
             default:
-                return Vector2.zero;
+                float verticalSpacing = secondCardPosition.y - thirdCardPosition.y;
+                return thirdCardPosition + Vector2.down * verticalSpacing * (index - 2);
         }
     }
 

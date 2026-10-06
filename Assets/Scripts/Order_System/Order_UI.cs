@@ -8,7 +8,6 @@ public class Order_UI : MonoBehaviour
     [SerializeField] private Order_UI_Controller uiController;
     [SerializeField] private Order_Card_UI orderCardPrefab;
     [SerializeField] private Transform orderCardContainer;
-    [SerializeField] private Order_Details_UI detailsUI;
     [SerializeField] private Order_Travel_Time travelTime;
 
     [Header("Card Positions")]
@@ -43,11 +42,6 @@ public class Order_UI : MonoBehaviour
         }
 
         if (orderCardContainer == null)
-        {
-            return;
-        }
-
-        if (detailsUI == null)
         {
             return;
         }
@@ -87,7 +81,7 @@ public class Order_UI : MonoBehaviour
             pickupTime = travelTime.PickupTimeDisplayFormatted;
         }
 
-        card.Setup(order, detailsUI, pickupTime);
+        card.Setup(order, orderManager, this, pickupTime);
 
         orderCards.Add(card);
     }

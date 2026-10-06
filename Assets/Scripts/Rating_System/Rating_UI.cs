@@ -25,8 +25,7 @@ public class Rating_UI : MonoBehaviour
 
         followsCurrentRating = true;
 
-        if (ratingPanel != null)
-            ratingPanel.SetActive(showPanelOnStart);
+        SetPanelVisible(showPanelOnStart);
     }
 
     private void Update()
@@ -61,14 +60,30 @@ public class Rating_UI : MonoBehaviour
 
     public void HidePanel()
     {
-        if (ratingPanel != null)
-            ratingPanel.SetActive(false);
+        SetPanelVisible(false);
     }
 
     public void ShowPanel()
     {
-        if (ratingPanel != null)
-            ratingPanel.SetActive(true);
+        SetPanelVisible(true);
+    }
+
+    private void SetPanelVisible(bool visible)
+    {
+        if (ratingPanel == null)
+            return;
+
+        Cursor_Controller cursorController = Cursor_Controller.Instance;
+
+        if (cursorController != null)
+        {
+            if (visible)
+                cursorController.OpenUI(ratingPanel);
+            else
+                cursorController.CloseUI(ratingPanel);
+        }
+
+        ratingPanel.SetActive(visible);
     }
 
     public void Clear()

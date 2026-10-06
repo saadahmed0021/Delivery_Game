@@ -15,6 +15,6 @@ MonoBehaviour:
   orderName: Pizza Deal
   restaurantName: Pizza Hut
   customerName: Shujja
-  baseReward: 20
+  baseReward: 550
   restaurantLocationID: 5
-  customerLocationID: 5
+  customerLocationID: 9

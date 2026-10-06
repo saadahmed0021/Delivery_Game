@@ -15,6 +15,6 @@ MonoBehaviour:
   orderName: Barfi Sweet
   restaurantName: Nisar Sweets
   customerName: Abdullah
-  baseReward: 10
+  baseReward: 300
   restaurantLocationID: 3
-  customerLocationID: 5
+  customerLocationID: 9

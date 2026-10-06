@@ -4,6 +4,7 @@ public class Order_UI_Controller : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private GameObject orderPanel;
+    [SerializeField] private GameObject backgroundPanel;
     [SerializeField] private Order_Manager orderManager;
 
     [Header("Input")]
@@ -45,11 +46,35 @@ public class Order_UI_Controller : MonoBehaviour
 
     private void SetPanelState(bool state)
     {
-        if (orderPanel == null)
-        {
+        if (orderPanel == null && backgroundPanel == null)
             return;
+
+        bool orderPanelMatches = orderPanel == null || orderPanel.activeSelf == state;
+        bool backgroundPanelMatches = backgroundPanel == null || backgroundPanel.activeSelf == state;
+
+        if (orderPanelMatches && backgroundPanelMatches)
+            return;
+
+        Cursor_Controller cursorController = Cursor_Controller.Instance;
+
+        if (cursorController != null)
+        {
+            if (state)
+            {
+                cursorController.OpenUI(orderPanel);
+                cursorController.OpenUI(backgroundPanel);
+            }
+            else
+            {
+                cursorController.CloseUI(orderPanel);
+                cursorController.CloseUI(backgroundPanel);
+            }
         }
 
-        orderPanel.SetActive(state);
+        if (orderPanel != null)
+            orderPanel.SetActive(state);
+
+        if (backgroundPanel != null)
+            backgroundPanel.SetActive(state);
     }
 }

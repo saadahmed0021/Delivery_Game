@@ -49,8 +49,7 @@ public class Order_Result_UI : MonoBehaviour
         if (rewardText != null)
             rewardText.text = $"Reward: ${order.Reward}";
 
-        if (resultPanel != null)
-            resultPanel.SetActive(true);
+        SetPanelVisible(true);
 
         if (orderManager == null || !orderManager.CompleteOrder())
         {
@@ -72,14 +71,30 @@ public class Order_Result_UI : MonoBehaviour
         if (rewardText != null)
             rewardText.text = "No reward";
 
-        if (resultPanel != null)
-            resultPanel.SetActive(true);
+        SetPanelVisible(true);
     }
 
     public void Hide()
     {
-        if (resultPanel != null)
-            resultPanel.SetActive(false);
+        SetPanelVisible(false);
+    }
+
+    private void SetPanelVisible(bool visible)
+    {
+        if (resultPanel == null)
+            return;
+
+        Cursor_Controller cursorController = Cursor_Controller.Instance;
+
+        if (cursorController != null)
+        {
+            if (visible)
+                cursorController.OpenUI(resultPanel);
+            else
+                cursorController.CloseUI(resultPanel);
+        }
+
+        resultPanel.SetActive(visible);
     }
 
     public void Close()

@@ -15,6 +15,6 @@ MonoBehaviour:
   orderName: Biryani Plate
   restaurantName: Student Biryani
   customerName: Ali
-  baseReward: 5
+  baseReward: 500
   restaurantLocationID: 1
-  customerLocationID: 5
+  customerLocationID: 9

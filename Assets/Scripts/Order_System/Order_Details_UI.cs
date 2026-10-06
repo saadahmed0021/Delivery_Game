@@ -50,16 +50,32 @@ public class Order_Details_UI : MonoBehaviour
 
         UpdateUI();
 
-        if (detailsPanel != null)
-            detailsPanel.SetActive(true);
+        SetPanelVisible(true);
     }
 
     public void Hide()
     {
         selectedOrder = null;
 
-        if (detailsPanel != null)
-            detailsPanel.SetActive(false);
+        SetPanelVisible(false);
+    }
+
+    private void SetPanelVisible(bool visible)
+    {
+        if (detailsPanel == null)
+            return;
+
+        Cursor_Controller cursorController = Cursor_Controller.Instance;
+
+        if (cursorController != null)
+        {
+            if (visible)
+                cursorController.OpenUI(detailsPanel);
+            else
+                cursorController.CloseUI(detailsPanel);
+        }
+
+        detailsPanel.SetActive(visible);
     }
 
     private void UpdateUI()

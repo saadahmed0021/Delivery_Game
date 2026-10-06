@@ -11,6 +11,7 @@ public class Order_Travel_Time : MonoBehaviour
     [SerializeField] private Order_Result_UI resultUI;
     [SerializeField] private Rating_Manager ratingManager;
     [SerializeField] private Order_Damage orderDamage;
+    [SerializeField] private AudioSource lowTimeAudioSource;
 
     [Header("Travel Settings")]
     [SerializeField, Min(0.1f)] private float averageSpeed = 10f;
@@ -18,6 +19,11 @@ public class Order_Travel_Time : MonoBehaviour
     [SerializeField, Min(0f)] private float extraDeliveryTime = 10f;
     [SerializeField] private int areaMask = NavMesh.AllAreas;
     [SerializeField, Min(0.1f)] private float sampleDistance = 5f;
+
+    [Header("Low Time Warning")]
+    [SerializeField, Min(0f)] private float lowTimeWarningThreshold = 10f;
+    [SerializeField, Min(0.05f)] private float lowTimeBlinkInterval = 0.5f;
+    [SerializeField] private Color lowTimeWarningColor = Color.red;
 
     private NavMeshPath navMeshPath;
 
@@ -31,6 +37,12 @@ public class Order_Travel_Time : MonoBehaviour
     private float deliveryElapsedTime;
     private bool deliveryPhase;
     private bool countdownRunning;
+    private Color originalTimerColor;
+    private bool hasOriginalTimerColor;
+    private bool lowTimeWarningActive;
+    private bool lowTimeTextVisible;
+    private bool lowTimeAudioStarted;
+    private float lowTimeBlinkTimer;
 
     public bool IsCountdownRunning => countdownRunning;
     public float ActiveTimeRemaining => activeTimeRemaining;
@@ -44,6 +56,12 @@ public class Order_Travel_Time : MonoBehaviour
     private void Awake()
     {
         navMeshPath = new NavMeshPath();
+
+        if (activeTimerText != null)
+        {
+            originalTimerColor = activeTimerText.color;
+            hasOriginalTimerColor = true;
+        }
 
         if (player == null)
             player = transform;
@@ -86,6 +104,7 @@ public class Order_Travel_Time : MonoBehaviour
         );
 
         UpdateActiveTimerText();
+        UpdateLowTimeWarning();
 
         if (activeTimeRemaining <= 0f && !deliveryPhase)
             HandleTimeout();
@@ -119,6 +138,8 @@ public class Order_Travel_Time : MonoBehaviour
 
     public bool StartPickupCountdown(Order order)
     {
+        ResetLowTimeWarning();
+
         if (order == null || order.RestaurantLocation == null)
         {
             activeTimeRemaining = 0f;
@@ -133,6 +154,14 @@ public class Order_Travel_Time : MonoBehaviour
             order.RestaurantLocation.Transform
         );
 
+        if (routeFound)
+        {
+            Debug.Log(
+                $"Selected restaurant '{order.RestaurantName}' pickup route distance: {pickupDistance / 1000f:F3} km.",
+                this
+            );
+        }
+
         activeTimeRemaining = Mathf.Max(0f, pickupTime);
         deliveryPhase = false;
         countdownRunning = true;
@@ -144,6 +173,8 @@ public class Order_Travel_Time : MonoBehaviour
 
     public bool StartDeliveryCountdown(Order order)
     {
+        ResetLowTimeWarning();
+
         if (order == null ||
             order.RestaurantLocation == null ||
             order.CustomerLocation == null)
@@ -159,6 +190,14 @@ public class Order_Travel_Time : MonoBehaviour
             order.RestaurantLocation.Transform,
             order.CustomerLocation.Transform
         );
+
+        if (routeFound)
+        {
+            Debug.Log(
+                $"Delivery route distance ({order.RestaurantName} to {order.CustomerName}): {deliveryDistance / 1000f:F3} km.",
+                this
+            );
+        }
 
         activeTimeRemaining = Mathf.Max(
             0f,
@@ -183,6 +222,7 @@ public class Order_Travel_Time : MonoBehaviour
         countdownRunning = false;
         deliveryPhase = false;
         activeTimeRemaining = 0f;
+        ResetLowTimeWarning();
 
         if (activeTimerText != null)
             activeTimerText.gameObject.SetActive(false);
@@ -386,6 +426,67 @@ public class Order_Travel_Time : MonoBehaviour
             activeTimerText.text = FormatTime(activeTimeRemaining);
     }
 
+    private void UpdateLowTimeWarning()
+    {
+        if (!countdownRunning ||
+            activeTimeRemaining >= lowTimeWarningThreshold)
+        {
+            if (lowTimeWarningActive)
+                ResetLowTimeWarning();
+
+            return;
+        }
+
+        if (!lowTimeWarningActive)
+        {
+            lowTimeWarningActive = true;
+            lowTimeTextVisible = true;
+            lowTimeBlinkTimer = 0f;
+
+            if (lowTimeAudioSource != null &&
+                lowTimeAudioSource.clip != null)
+            {
+                lowTimeAudioSource.Play();
+                lowTimeAudioStarted = true;
+            }
+        }
+
+        lowTimeBlinkTimer += Time.deltaTime;
+
+        if (lowTimeBlinkTimer >= lowTimeBlinkInterval)
+        {
+            lowTimeBlinkTimer %= lowTimeBlinkInterval;
+            lowTimeTextVisible = !lowTimeTextVisible;
+        }
+
+        if (activeTimerText != null)
+        {
+            activeTimerText.color = lowTimeTextVisible
+                ? lowTimeWarningColor
+                : new Color(
+                    lowTimeWarningColor.r,
+                    lowTimeWarningColor.g,
+                    lowTimeWarningColor.b,
+                    0f
+                );
+        }
+    }
+
+    private void ResetLowTimeWarning()
+    {
+        lowTimeWarningActive = false;
+        lowTimeTextVisible = false;
+        lowTimeBlinkTimer = 0f;
+
+        if (activeTimerText != null && hasOriginalTimerColor)
+            activeTimerText.color = originalTimerColor;
+
+        if (lowTimeAudioStarted && lowTimeAudioSource != null)
+            lowTimeAudioSource.Stop();
+
+        lowTimeAudioStarted = false;
+    }
+
     private bool TryGetNavMeshPosition(
         Vector3 position,
         out Vector3 result)
@@ -408,5 +509,7 @@ public class Order_Travel_Time : MonoBehaviour
     {
         averageSpeed = Mathf.Max(0.1f, averageSpeed);
         sampleDistance = Mathf.Max(0.1f, sampleDistance);
+        lowTimeWarningThreshold = Mathf.Max(0f, lowTimeWarningThreshold);
+        lowTimeBlinkInterval = Mathf.Max(0.05f, lowTimeBlinkInterval);
     }
 }
