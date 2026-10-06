@@ -46,15 +46,17 @@ public class Order_Result_UI : MonoBehaviour
         if (resultText != null)
             resultText.text = "Order Delivered!";
 
-        if (rewardText != null)
-            rewardText.text = $"Reward: {order.Reward:N0} PKR";
-
-        SetPanelVisible(true);
-
         if (orderManager == null || !orderManager.CompleteOrder())
         {
             Hide();
+            return;
         }
+
+        if (rewardText != null)
+            rewardText.text =
+                $"Reward: {orderManager.LastCompletionReward:N0} PKR";
+
+        SetPanelVisible(true);
     }
 
     public void ShowFailure(Order order)

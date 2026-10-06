@@ -16,9 +16,11 @@ public class Order_Manager : MonoBehaviour
     private Order_Pickup activePickup;
     private Order_Delivery activeDelivery;
     private int activeOrderSlotIndex = -1;
+    private int lastCompletionReward;
 
     public IReadOnlyList<Order> AvailableOrders => availableOrders;
     public Order ActiveOrder => activeOrder;
+    public int LastCompletionReward => lastCompletionReward;
 
     public bool HasActiveOrder => activeOrder != null;
 
@@ -167,13 +169,7 @@ public class Order_Manager : MonoBehaviour
         if (currencyReward == null)
             currencyReward = GetComponent<Order_Currency_Reward>();
 
-        if (currencyReward == null ||
-            !currencyReward.GiveReward(activeOrder.Reward))
-        {
-            return false;
-        }
-
-        if (!activeOrder.Complete())
+        if (currencyReward == null)
             return false;
 
         ClearActiveDeliveryArrow();
@@ -197,6 +193,20 @@ public class Order_Manager : MonoBehaviour
                 orderDamage != null ? orderDamage.Damage : 0f
             )
             : new Rating_Result(0f, 1);
+
+        lastCompletionReward = currencyReward.CalculateReward(
+            activeOrder.Reward,
+            result.Score
+        );
+
+        if (lastCompletionReward > 0 &&
+            !currencyReward.GiveReward(lastCompletionReward))
+        {
+            return false;
+        }
+
+        if (!activeOrder.Complete())
+            return false;
 
         ratingUI?.ShowDeliveryResult(result);
 

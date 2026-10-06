@@ -53,6 +53,17 @@ public class Order_Currency_Reward : MonoBehaviour
         return true;
     }
 
+    public int CalculateReward(int baseReward, float finalRating)
+    {
+        const float maximumRating = 5f;
+
+        if (baseReward <= 0 || finalRating <= 0f)
+            return 0;
+
+        float rewardRatio = Mathf.Clamp01(finalRating / maximumRating);
+        return Mathf.RoundToInt(baseReward * rewardRatio);
+    }
+
     public int GetRewardAmount()
     {
         return rewardAmount;
