@@ -73,15 +73,17 @@ public class Order_UI : MonoBehaviour
             rect.anchoredPosition = GetCardPosition(index);
 
         string pickupTime = string.Empty;
+        string pickupDistance = string.Empty;
         Order_Location restaurant = order.RestaurantLocation;
 
         if (travelTime != null && restaurant != null &&
             travelTime.CalculatePickupTime(restaurant.Transform))
         {
             pickupTime = travelTime.PickupTimeDisplayFormatted;
+            pickupDistance = $"{travelTime.PickupDistance / 1000f:F2} km";
         }
 
-        card.Setup(order, orderManager, this, pickupTime);
+        card.Setup(order, orderManager, this, pickupTime, pickupDistance);
 
         orderCards.Add(card);
     }

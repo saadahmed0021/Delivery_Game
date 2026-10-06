@@ -26,6 +26,10 @@ public class Rating_Data : ScriptableObject
     [Min(0f)]
     [SerializeField] private float ratingPenaltyPerDamageCollision = 0.4f;
 
+    [Tooltip("Rating lost for each 100% accumulated delivery damage.")]
+    [Min(0f)]
+    [SerializeField] private float ratingPenaltyPerDamagePercent = 0.2f;
+
 
     [Header("Star Rating")]
     [Tooltip("Minimum score required for 5 stars.")]
@@ -59,6 +63,7 @@ public class Rating_Data : ScriptableObject
     public float RatingPenaltyAt10SecondsLate => ratingPenaltyAt10SecondsLate;
     public float RatingPenaltyAt20SecondsLate => ratingPenaltyAt20SecondsLate;
     public float RatingPenaltyPerDamageCollision => ratingPenaltyPerDamageCollision;
+    public float RatingPenaltyPerDamagePercent => ratingPenaltyPerDamagePercent;
 
 
 

@@ -35,7 +35,8 @@ public class Order_Card_UI : MonoBehaviour
         Order targetOrder,
         Order_Manager targetOrderManager,
         Order_UI targetOrdersUI,
-        string pickupTimeFormatted)
+        string pickupTimeFormatted,
+        string pickupDistanceFormatted)
     {
         order = targetOrder;
         orderManager = targetOrderManager;
@@ -47,10 +48,12 @@ public class Order_Card_UI : MonoBehaviour
             return;
         }
 
-        UpdateUI(pickupTimeFormatted);
+        UpdateUI(pickupTimeFormatted, pickupDistanceFormatted);
     }
 
-    private void UpdateUI(string pickupTimeFormatted)
+    private void UpdateUI(
+        string pickupTimeFormatted,
+        string pickupDistanceFormatted)
     {
         if (orderNameText != null)
             orderNameText.text = order.OrderName;
@@ -62,10 +65,14 @@ public class Order_Card_UI : MonoBehaviour
             customerNameText.text = order.CustomerName;
 
         if (rewardText != null)
-            rewardText.text = $"${order.Reward}";
+            rewardText.text = $"{order.Reward:N0} PKR";
 
         if (travelTimeText != null)
-            travelTimeText.text = pickupTimeFormatted;
+        {
+            travelTimeText.text = string.IsNullOrEmpty(pickupDistanceFormatted)
+                ? pickupTimeFormatted
+                : $"{pickupDistanceFormatted} | {pickupTimeFormatted}";
+        }
     }
 
     private void SelectOrder()

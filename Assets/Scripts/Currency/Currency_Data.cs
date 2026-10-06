@@ -5,7 +5,7 @@ public class Currency_Data : ScriptableObject
 {
     [Header("Currency")]
     [SerializeField] private string currencyName = "Money";
-    [SerializeField] private string currencySymbol = "$";
+    [SerializeField] private string currencySymbol = "PKR";
 
     [Header("Limits")]
     [SerializeField, Min(0)] private int startingAmount = 0;

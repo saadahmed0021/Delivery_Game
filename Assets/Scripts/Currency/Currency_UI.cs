@@ -90,6 +90,6 @@ public class Currency_UI : MonoBehaviour
         if (currencyText == null)
             return;
 
-        currencyText.text = amount.ToString("N0");
+        currencyText.text = $"{amount:N0} PKR";
     }
 }

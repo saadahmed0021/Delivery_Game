@@ -93,7 +93,7 @@ public class Order_Details_UI : MonoBehaviour
             customerNameText.text = selectedOrder.CustomerName;
 
         if (rewardText != null)
-            rewardText.text = $"${selectedOrder.Reward}";
+            rewardText.text = $"{selectedOrder.Reward:N0} PKR";
 
         if (acceptButton != null)
             acceptButton.interactable = CanAcceptOrder();

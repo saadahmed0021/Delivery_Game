@@ -47,7 +47,7 @@ public class Order_Result_UI : MonoBehaviour
             resultText.text = "Order Delivered!";
 
         if (rewardText != null)
-            rewardText.text = $"Reward: ${order.Reward}";
+            rewardText.text = $"Reward: {order.Reward:N0} PKR";
 
         SetPanelVisible(true);
 
