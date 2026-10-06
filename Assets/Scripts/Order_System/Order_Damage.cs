@@ -12,7 +12,6 @@ public class Order_Damage : MonoBehaviour
     public bool IsDestroyed => damage >= 1f;
 
     public event Action DamageRegistered;
-    public event Action DamageChanged;
 
     public void AddDamage(float amount)
     {
@@ -23,28 +22,17 @@ public class Order_Damage : MonoBehaviour
         damage = Mathf.Clamp01(damage + amount);
 
         if (!Mathf.Approximately(previousDamage, damage))
-        {
             DamageRegistered?.Invoke();
-            DamageChanged?.Invoke();
-        }
     }
 
     public void SetDamage(float value)
     {
-        float previousDamage = damage;
         damage = Mathf.Clamp01(value);
-
-        if (!Mathf.Approximately(previousDamage, damage))
-            DamageChanged?.Invoke();
     }
 
     public void ResetDamage()
     {
-        if (damage == 0f)
-            return;
-
         damage = 0f;
-        DamageChanged?.Invoke();
     }
 
     public void SetDamagePercent(float percent)

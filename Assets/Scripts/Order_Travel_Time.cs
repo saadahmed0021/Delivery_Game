@@ -10,6 +10,7 @@ public class Order_Travel_Time : MonoBehaviour
     [SerializeField] private Order_Manager orderManager;
     [SerializeField] private Order_Result_UI resultUI;
     [SerializeField] private Rating_Manager ratingManager;
+    [SerializeField] private Order_Damage orderDamage;
     [SerializeField] private AudioSource lowTimeAudioSource;
 
     [Header("Travel Settings")]
@@ -71,6 +72,9 @@ public class Order_Travel_Time : MonoBehaviour
         if (ratingManager == null)
             ratingManager = FindFirstObjectByType<Rating_Manager>();
 
+        if (orderDamage == null)
+            orderDamage = FindFirstObjectByType<Order_Damage>();
+
         if (resultUI == null)
         {
             resultUI = FindFirstObjectByType<Order_Result_UI>(
@@ -96,9 +100,7 @@ public class Order_Travel_Time : MonoBehaviour
 
         ratingManager?.UpdateLiveRating(
             LateDeliverySeconds,
-            orderManager != null
-                ? orderManager.AccumulatedDeliveryDamage
-                : 0f
+            orderDamage != null ? orderDamage.Damage : 0f
         );
 
         UpdateActiveTimerText();
@@ -205,9 +207,7 @@ public class Order_Travel_Time : MonoBehaviour
         deliveryPhase = true;
         ratingManager?.UpdateLiveRating(
             0f,
-            orderManager != null
-                ? orderManager.AccumulatedDeliveryDamage
-                : 0f
+            orderDamage != null ? orderDamage.Damage : 0f
         );
 
         countdownRunning = true;

@@ -16,26 +16,11 @@ public class Order_Manager : MonoBehaviour
     private Order_Pickup activePickup;
     private Order_Delivery activeDelivery;
     private int activeOrderSlotIndex = -1;
-    private float accumulatedDeliveryDamage;
-    private float previousDeliveryDamage;
-    private bool trackingDeliveryDamage;
-    private bool subscribedToDamageEvents;
 
     public IReadOnlyList<Order> AvailableOrders => availableOrders;
     public Order ActiveOrder => activeOrder;
-    public float AccumulatedDeliveryDamage => accumulatedDeliveryDamage;
 
     public bool HasActiveOrder => activeOrder != null;
-
-    private void Awake()
-    {
-        SubscribeToDamageEvents();
-    }
-
-    private void OnDestroy()
-    {
-        UnsubscribeFromDamageEvents();
-    }
 
     public void InsertAvailableOrder(Order order, int index)
     {
@@ -125,10 +110,8 @@ public class Order_Manager : MonoBehaviour
         if (orderDamage == null)
             orderDamage = FindFirstObjectByType<Order_Damage>();
 
-        SubscribeToDamageEvents();
         currencyReward?.ResetReward();
         orderDamage?.ResetDamage();
-        StartDeliveryDamageTracking();
         ratingManager?.StartOrder();
         travelTime?.StartPickupCountdown(activeOrder);
 
@@ -184,18 +167,8 @@ public class Order_Manager : MonoBehaviour
         if (currencyReward == null)
             currencyReward = GetComponent<Order_Currency_Reward>();
 
-        float lateDeliverySeconds =
-            travelTime != null ? travelTime.LateDeliverySeconds : 0f;
-        int finalReward = currencyReward != null
-            ? currencyReward.CalculateFinalReward(
-                activeOrder.Reward,
-                accumulatedDeliveryDamage,
-                lateDeliverySeconds
-            )
-            : activeOrder.Reward;
-
         if (currencyReward == null ||
-            !currencyReward.GiveReward(finalReward))
+            !currencyReward.GiveReward(activeOrder.Reward))
         {
             return false;
         }
@@ -220,13 +193,12 @@ public class Order_Manager : MonoBehaviour
 
         Rating_Result result = ratingManager != null
             ? ratingManager.CompleteDelivery(
-                lateDeliverySeconds,
-                accumulatedDeliveryDamage
+                travelTime != null ? travelTime.LateDeliverySeconds : 0f,
+                orderDamage != null ? orderDamage.Damage : 0f
             )
             : new Rating_Result(0f, 1);
 
         ratingUI?.ShowDeliveryResult(result);
-        ResetDeliveryDamageTracking();
 
         int replacedOrderIndex = activeOrderSlotIndex;
         activeOrder = null;
@@ -260,60 +232,10 @@ public class Order_Manager : MonoBehaviour
             travelTime = FindFirstObjectByType<Order_Travel_Time>();
 
         travelTime?.StopCountdown();
-        ResetDeliveryDamageTracking();
 
         activeOrder = null;
 
         return true;
-    }
-
-    private void SubscribeToDamageEvents()
-    {
-        if (orderDamage == null || subscribedToDamageEvents)
-            return;
-
-        orderDamage.DamageChanged += OnDeliveryDamageChanged;
-        subscribedToDamageEvents = true;
-    }
-
-    private void UnsubscribeFromDamageEvents()
-    {
-        if (!subscribedToDamageEvents || orderDamage == null)
-            return;
-
-        orderDamage.DamageChanged -= OnDeliveryDamageChanged;
-        subscribedToDamageEvents = false;
-    }
-
-    private void StartDeliveryDamageTracking()
-    {
-        accumulatedDeliveryDamage = 0f;
-        previousDeliveryDamage = orderDamage != null
-            ? orderDamage.Damage
-            : 0f;
-        trackingDeliveryDamage = true;
-    }
-
-    private void ResetDeliveryDamageTracking()
-    {
-        accumulatedDeliveryDamage = 0f;
-        previousDeliveryDamage = 0f;
-        trackingDeliveryDamage = false;
-    }
-
-    private void OnDeliveryDamageChanged()
-    {
-        if (!trackingDeliveryDamage || orderDamage == null)
-            return;
-
-        float newDamage = Mathf.Max(
-            0f,
-            orderDamage.Damage - previousDeliveryDamage
-        );
-        accumulatedDeliveryDamage = Mathf.Clamp01(
-            accumulatedDeliveryDamage + newDamage
-        );
-        previousDeliveryDamage = orderDamage.Damage;
     }
 
     private Order_Pickup FindPickup(Order_Location restaurantLocation)

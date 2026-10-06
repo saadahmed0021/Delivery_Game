@@ -17,6 +17,7 @@ public class Rating_Calculator
             return new Rating_Result(0f, 1);
         }
 
+
         lateDeliverySeconds = Mathf.Max(0f, lateDeliverySeconds);
         damageCollisionCount = Mathf.Max(0, damageCollisionCount);
 
@@ -32,39 +33,6 @@ public class Rating_Calculator
         );
 
         int stars = CalculateStars(finalScore, damageCollisionCount);
-
-        return new Rating_Result(finalScore, stars);
-    }
-
-    public Rating_Result Calculate(
-        float lateDeliverySeconds,
-        float accumulatedDamagePercent)
-    {
-        if (data == null)
-        {
-            return new Rating_Result(0f, 1);
-        }
-
-        lateDeliverySeconds = Mathf.Max(0f, lateDeliverySeconds);
-        accumulatedDamagePercent = Mathf.Clamp01(
-            Mathf.Max(0f, accumulatedDamagePercent)
-        );
-
-        float timePenalty = CalculateTimePenalty(lateDeliverySeconds);
-        float damagePenalty =
-            accumulatedDamagePercent * data.RatingPenaltyPerDamagePercent;
-        float finalScore = data.BaseRating - timePenalty - damagePenalty;
-
-        finalScore = Mathf.Clamp(
-            finalScore,
-            data.MinimumScore,
-            data.MaximumScore
-        );
-
-        int stars = CalculateStars(
-            finalScore,
-            accumulatedDamagePercent > 0f
-        );
 
         return new Rating_Result(finalScore, stars);
     }

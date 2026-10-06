@@ -76,7 +76,7 @@ public class Rating_Manager : MonoBehaviour
 
     public void UpdateLiveRating(
         float lateDeliverySeconds,
-        float accumulatedDamagePercent)
+        float damage)
     {
         if (!orderInProgress || currentOrderFinalized)
             return;
@@ -87,13 +87,13 @@ public class Rating_Manager : MonoBehaviour
         currentLateDeliverySeconds = Mathf.Max(0f, lateDeliverySeconds);
         currentRating = ratingCalculator.Calculate(
             currentLateDeliverySeconds,
-            accumulatedDamagePercent
+            damageCollisionCount
         ).Score;
     }
 
     public Rating_Result CompleteDelivery(
         float lateDeliverySeconds,
-        float accumulatedDamagePercent)
+        float damage)
     {
         if (ratingCalculator == null)
         {
@@ -102,7 +102,7 @@ public class Rating_Manager : MonoBehaviour
 
         Rating_Result result = ratingCalculator.Calculate(
             lateDeliverySeconds,
-            accumulatedDamagePercent
+            damageCollisionCount
         );
 
         currentRating = result.Score;
